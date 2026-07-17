@@ -55,12 +55,38 @@ export class WorldScene extends Phaser.Scene {
   }
 
   init(data: WorldSceneData): void {
-    this.pois = placesToPois(data.places.places);
-    this.placePanel = data.placePanel;
-    this.hudHost = data.hudHost;
+    const resolved = data ?? (this.registry.get('worldData') as WorldSceneData);
+    this.pois = placesToPois(resolved.places.places);
+    this.placePanel = resolved.placePanel;
+    this.hudHost = resolved.hudHost;
   }
 
   create(data: WorldSceneData): void {
+    try {
+      this.bootWorld(data ?? (this.registry.get('worldData') as WorldSceneData));
+    } catch (err) {
+      console.error('[WorldScene]', err);
+      const message = err instanceof Error ? err.message : String(err);
+      this.cameras.main.setBackgroundColor('#0b1220');
+      this.cameras.main.resetFX();
+      this.add
+        .text(this.scale.width / 2, this.scale.height / 2, `Error en el mapa\n${message}`, {
+          fontFamily: 'DM Sans, system-ui, sans-serif',
+          fontSize: '16px',
+          color: '#ffb4a8',
+          align: 'center',
+          wordWrap: { width: Math.min(420, this.scale.width - 40) },
+        })
+        .setOrigin(0.5)
+        .setScrollFactor(0);
+    }
+  }
+
+  private bootWorld(data: WorldSceneData): void {
+    if (!data?.places) {
+      throw new Error('Datos del mundo incompletos');
+    }
+
     this.drawWorld();
     this.spawnPois();
 
@@ -76,24 +102,33 @@ export class WorldScene extends Phaser.Scene {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     body.setSize(28, 20);
     body.setOffset(10, 52);
-    this.player.play('idle-down');
+    if (this.anims.exists('idle-down')) {
+      this.player.play('idle-down');
+    }
     this.addAmbientFx();
 
     this.physics.world.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
     this.cameras.main.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
-    // Match land so no green “mystery strip” peeks under/around the world
-    this.cameras.main.setBackgroundColor('#0f3550');
+    this.cameras.main.setBackgroundColor('#4f7a58');
+    // Ensure we never stay stuck on a black fade
+    this.cameras.main.resetFX();
+    this.cameras.main.setAlpha(1);
+    this.cameras.main.fadeIn(400, 79, 122, 88);
 
-    this.cursors = this.input.keyboard!.createCursorKeys();
+    const kb = this.input.keyboard;
+    if (!kb) {
+      throw new Error('Teclado no disponible en este navegador');
+    }
+    this.cursors = kb.createCursorKeys();
     this.wasd = {
-      w: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      a: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      s: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      d: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      w: kb.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      a: kb.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      s: kb.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      d: kb.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
-    this.interactKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    this.interactKey = kb.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
     this.joystick = new VirtualJoystick(this);
     this.visited = loadVisited();
@@ -148,8 +183,6 @@ export class WorldScene extends Phaser.Scene {
     interactBtn.on('pointerdown', () => this.tryInteract());
 
     this.mountDomHud(data);
-
-    this.cameras.main.fadeIn(650, 79, 122, 88);
   }
 
   private mountDomHud(data: WorldSceneData): void {

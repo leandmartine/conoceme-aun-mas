@@ -28,12 +28,16 @@ export function createGame(options: {
     },
   };
 
+  // Ensure parent is visible and has size before Phaser boots
+  options.parent.hidden = false;
+  options.parent.style.display = 'block';
+
   gameRef = new Phaser.Game({
     type: Phaser.AUTO,
     parent: options.parent,
-    width: window.innerWidth,
-    height: window.innerHeight,
-    backgroundColor: '#0f3550',
+    width: Math.max(window.innerWidth, 320),
+    height: Math.max(window.innerHeight, 320),
+    backgroundColor: '#4f7a58',
     physics: {
       default: 'arcade',
       arcade: {
@@ -44,21 +48,35 @@ export function createGame(options: {
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
+      width: Math.max(window.innerWidth, 320),
+      height: Math.max(window.innerHeight, 320),
     },
     scene: [BootScene, WorldScene],
     input: {
       activePointers: 3,
+      keyboard: true,
     },
     render: {
       antialias: true,
       pixelArt: false,
       roundPixels: true,
+      transparent: false,
+      clearBeforeRender: true,
     },
     callbacks: {
       preBoot: (game) => {
         game.registry.set('worldData', data);
       },
     },
+  });
+
+  // Nudge a resize after layout (fixes black canvas on some browsers)
+  requestAnimationFrame(() => {
+    try {
+      gameRef.scale.resize(window.innerWidth, window.innerHeight);
+    } catch {
+      /* ignore */
+    }
   });
 
   const onResize = () => {
