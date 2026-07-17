@@ -1,8 +1,5 @@
 # conoceme-aun-mas
 
-> Un portafolio que se **juega**. Un Uruguay estilizado que se **explora**.  
-> No es “una web más”.
-
 **Status:** foundation / design locked · code scaffolding next  
 **Stack:** Vite · TypeScript · Phaser 3 · GSAP · Lenis  
 **View:** top-down · art direction: **híbrido moderno**
