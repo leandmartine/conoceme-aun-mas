@@ -161,6 +161,11 @@ export interface AiStatusDto {
   mode: 'stub' | 'llm' | 'disabled';
   requiresApiKey: boolean;
   modelConfigured: boolean;
+  /**
+   * Optional browser companion key (intentionally public + rate-limited).
+   * Served at runtime so Docker/Railway don't need FE rebuild to rotate it.
+   */
+  publicClientKey?: string | null;
 }
 
 export const API_V1_PREFIX = '/api/v1' as const;

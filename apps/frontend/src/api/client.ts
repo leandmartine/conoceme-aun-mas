@@ -23,9 +23,28 @@ export class ApiClientError extends Error {
   }
 }
 
-/** Portfolio AI key — only for local/demo companion; never put real secrets in VITE_*. */
-function portfolioApiKey(): string {
+/**
+ * Companion key resolution:
+ * 1) VITE_PORTFOLIO_API_KEY (local dev)
+ * 2) GET /ai/status → publicClientKey (prod Railway, no rebuild)
+ */
+let runtimeCompanionKey: string | null | undefined;
+
+function envCompanionKey(): string {
   return (import.meta.env.VITE_PORTFOLIO_API_KEY as string | undefined)?.trim() || '';
+}
+
+async function resolveCompanionKey(): Promise<string> {
+  const fromEnv = envCompanionKey();
+  if (fromEnv) return fromEnv;
+  if (runtimeCompanionKey !== undefined) return runtimeCompanionKey ?? '';
+  try {
+    const status = await request<AiStatusDto>('/ai/status');
+    runtimeCompanionKey = status.publicClientKey?.trim() || null;
+  } catch {
+    runtimeCompanionKey = null;
+  }
+  return runtimeCompanionKey ?? '';
 }
 
 async function request<T>(
@@ -39,7 +58,7 @@ async function request<T>(
   };
 
   if (init?.withApiKey) {
-    const key = portfolioApiKey();
+    const key = await resolveCompanionKey();
     if (key) headers['Authorization'] = `Bearer ${key}`;
   }
 
@@ -76,7 +95,7 @@ export const api = {
       body: JSON.stringify(state),
     }),
   aiStatus: () => request<AiStatusDto>('/ai/status'),
-  aiChat: (body: AiChatRequest) =>
+  aiChat: async (body: AiChatRequest) =>
     request<AiChatResponse>('/ai/chat', {
       method: 'POST',
       body: JSON.stringify(body),

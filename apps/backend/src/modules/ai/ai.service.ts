@@ -31,6 +31,7 @@ export class AiService {
       mode: !hasKeys ? 'disabled' : modelConfigured ? 'llm' : 'stub',
       requiresApiKey: true,
       modelConfigured,
+      publicClientKey: this.env.publicCompanionKey,
     };
   }
 

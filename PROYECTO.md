@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟢 v1 experiencia completa en código — deploy real pendiente de OK |
+| **Status** | 🟢 v1 lista · deploy Railway (ver docs/DEPLOY.md) |
 | **Stack** | FE: Vite·TS·Phaser 3·GSAP · BE: Hono·TS·REST · shared · content-driven |
 | **Art** | Híbrido moderno · top-down · minimapa brújula · personaje foto-inspired |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -13,8 +13,8 @@
 
 ## Current focus
 
-1. Merge `chore/deploy-ci` (CI + Docker scaffold).  
-2. **Deploy público** solo cuando Leandro lo autorice (ver `docs/DEPLOY.md`).  
+1. Deploy en **Railway** (auto desde `main`).  
+2. Opcional: dominio custom.  
 3. Opcional: provider LLM SpaceXAI con `XAI_API_KEY`.
 
 ---

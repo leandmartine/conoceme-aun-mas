@@ -1,78 +1,84 @@
 # Deploy — conoceme-aun-mas
 
-Scaffold de producción. **El deploy real lo dispara Leandro** cuando quiera (dominio, secrets, plataforma).
+## Recomendado: Railway (fácil + se mantiene)
 
-## Qué se empaqueta
+Un solo servicio con el **Dockerfile** del monorepo: SPA + API + `content/` same-origin.
 
-Un solo proceso Node:
+| Por qué | |
+|---------|--|
+| Fácil | Conectar GitHub, setear 2–3 variables, Deploy |
+| Se mantiene | Cada **merge a `main`** redeploy automático |
+| Encaja | Ya tenés container production-ready |
 
-| Pieza | Path |
-|-------|------|
-| API REST | `/api/v1/*` |
-| SPA (Vite build) | `/` vía `STATIC_ROOT` |
-| Content editorial | `/content` |
+### 1. Cuenta y proyecto
 
-En desarrollo se sigue usando Vite (`5173`) + API (`8787`) con proxy.
+1. Entrá a [railway.app](https://railway.app) (login con GitHub).  
+2. **New Project** → **Deploy from GitHub repo** → `leandmartine/conoceme-aun-mas`.  
+3. Railway detecta `railway.toml` + `Dockerfile`.
 
-## Variables
+### 2. Variables (Settings → Variables)
 
-Ver `.env.example`.
-
-| Variable | Prod |
-|----------|------|
+| Variable | Valor |
+|----------|--------|
 | `NODE_ENV` | `production` |
-| `PORT` | `8787` (o el de la plataforma) |
-| `CONTENT_ROOT` | path al `content/` |
-| `STATIC_ROOT` | path al `apps/frontend/dist` |
-| `CORS_ORIGIN` | origen público del sitio (o `*` si same-origin SPA+API) |
-| `PORTFOLIO_API_KEYS` | keys reales del companion (comma-separated) |
-| `XAI_API_KEY` | opcional, futuro LLM |
+| `HOST` | `0.0.0.0` |
+| `CONTENT_ROOT` | `/app/content` |
+| `STATIC_ROOT` | `/app/apps/frontend/dist` |
+| `CORS_ORIGIN` | `*` (same-origin SPA+API; o tu dominio HTTPS) |
+| `PUBLIC_COMPANION_KEY` | string random (ej. `openssl rand -hex 16`) — el chat 💬 del juego la pide a `/ai/status` |
+| `PORTFOLIO_API_KEYS` | opcional: keys extra privadas, comma-separated |
+| `AI_RATE_LIMIT_MAX` | `30` (opcional) |
 
-Nunca commitear keys reales.
+**No hace falta** `VITE_PORTFOLIO_API_KEY` en prod: el frontend toma `publicClientKey` del status en runtime.
 
-## Docker local (smoke)
+`PORT` lo inyecta Railway solo — no lo fijes a menos que sepas por qué.
+
+### 3. Dominio
+
+1. **Settings → Networking → Generate Domain** → algo como `conoceme-aun-mas-production.up.railway.app`.  
+2. (Opcional) Custom domain + DNS CNAME.  
+3. Si usás dominio propio, podés poner `CORS_ORIGIN=https://tu-dominio.com`.
+
+### 4. Verificar
 
 ```bash
+curl -s https://TU-DOMINIO.up.railway.app/api/v1/health
+curl -s https://TU-DOMINIO.up.railway.app/api/v1/ai/status
+# Abrir el sitio → Entrar al mundo → 💬 companion
+```
+
+### 5. Flujo de mantenimiento
+
+```text
+branch → PR → merge a main → Railway rebuild + deploy
+```
+
+Cambios de content, arte o API se publican solos al mergear.
+
+---
+
+## Local Docker (smoke)
+
+```bash
+export PUBLIC_COMPANION_KEY=dev-local-key
 export PORTFOLIO_API_KEYS=dev-local-key
 docker compose up --build
 # http://localhost:8787
-curl -s http://localhost:8787/api/v1/health
 ```
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`):
+GitHub Actions: typecheck + tests + build (no deploy). Deploy = Railway.
 
-1. Docs + content guard  
-2. `npm ci` · typecheck · test · build  
+## Checklist go-live
 
-## Plataformas (cuando se decida)
+- [ ] Health 200  
+- [ ] Landing + mapa cargan  
+- [ ] Companion 💬 responde (PUBLIC_COMPANION_KEY)  
+- [ ] Media `/media/leandro.jpg` y favicon  
+- [ ] Rate limit no se abusa en 1 minuto  
+- [ ] (Opcional) dominio custom + HTTPS  
 
-Opciones simples con **un container**:
+## Otras plataformas
 
-1. **Railway / Render / Fly.io** — conectar repo, Dockerfile, set env, dominio.  
-2. **VPS** — `docker compose` + reverse proxy (Caddy/Nginx) + TLS.  
-3. **Split** (opcional después) — FE en CDN estático, BE en Node; entonces `CORS_ORIGIN` = dominio FE y API separada.
-
-Checklist pre-go-live:
-
-- [ ] Dominio + HTTPS  
-- [ ] `PORTFOLIO_API_KEYS` fuertes (no `dev-local-key`)  
-- [ ] `CORS_ORIGIN` acotado  
-- [ ] Health check `/api/v1/health` verde  
-- [ ] Probar companion 💬 con key de prod  
-- [ ] Favicon + `/media/leandro.jpg` sirven  
-- [ ] No logs de mensajes/PII de más  
-
-## Build sin Docker
-
-```bash
-npm ci
-npm run build
-NODE_ENV=production \
-  CONTENT_ROOT=./content \
-  STATIC_ROOT=./apps/frontend/dist \
-  CORS_ORIGIN=https://tu-dominio \
-  PORTFOLIO_API_KEYS=... \
-  npm start
-```
+Mismo Dockerfile sirve en **Render** o **Fly.io**. Railway es el camino de menor fricción para este repo.
