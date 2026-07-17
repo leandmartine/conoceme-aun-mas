@@ -4,31 +4,29 @@ node_modules/
 # Build
 dist/
 dist-ssr/
-*.local
+*.tsbuildinfo
+.turbo/
+.cache/
+.vite/
 
 # Env
 .env
 .env.*
 !.env.example
 
-# Logs / cache
+# Logs
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.DS_Store
-*.tsbuildinfo
-.cache/
-.vite/
 
-# Editor
+# OS / editor
+.DS_Store
+Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# Test / coverage
+# Coverage
 coverage/
-
-# OS
-Thumbs.db

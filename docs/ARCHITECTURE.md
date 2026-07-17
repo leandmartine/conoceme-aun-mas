@@ -54,7 +54,8 @@ conoceme-aun-mas/
 └── docs/
 ```
 
-**Workspaces:** `pnpm` o `npm` workspaces (decidir en PR de scaffold).  
+**Workspaces:** **npm workspaces** (root `package.json`).  
+**HTTP framework:** **Hono** + `@hono/node-server`.  
 **Deploy (target):** frontend estático (Vercel/CDN) + backend como serverless functions o servicio Node.
 
 ---

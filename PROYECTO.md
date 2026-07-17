@@ -4,8 +4,8 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Docs de arquitectura + perfil + AI guide — scaffold de código next |
-| **Stack** | FE: Vite·Phaser·GSAP·Lenis · BE: Node·TS·REST · shared types |
+| **Status** | 🟡 Monorepo scaffold — shell básica + API profile/places |
+| **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
 
@@ -13,33 +13,28 @@
 
 ## Current focus
 
-1. Merge de la PR de arquitectura/perfil/AI/README (resolver conflictos con main).  
-2. Siguiente: monorepo scaffold `apps/frontend` + `apps/backend` + `packages/shared`.
+1. Merge monorepo scaffold (esta PR).  
+2. Siguiente: GSAP intro shell y/o Phaser player + compass.
 
 ---
 
 ## Changelog
 
+### 2026-07-17 — Monorepo scaffold
+
+- npm workspaces: `apps/frontend`, `apps/backend`, `packages/shared`.  
+- Backend Hono con capas SOLID: health, profile, places, player state.  
+- Content leído desde `/content`.  
+- Frontend Vite: shell dark premium + client API tipado.  
+- CI: install + typecheck + build.
+
 ### 2026-07-17 — Architecture & profile
 
-- Split FE/BE documentado (SOLID, REST `/api/v1`, API key futura).  
-- `docs/AI_GUIDE.md` — rol de IA, anti-jailbreak, tono humano.  
-- Minimapa tipo brújula como feature de producto.  
-- Perfil real: Leandro Emanuel Martinez; links LinkedIn/GitHub/email.  
-- Content de lugares base; todo unlocked.  
-- Personaje: alto/grande, tez café con leche, ojos oscuros, pelo negro (inspirado, no idéntico).  
-- README limpio (sin sección de colaboración externa).  
-- Workflow agent: avisar PR lista; no commitear sobre PRs ya abiertas/listas.
-
-### 2026-07-17 — World map
-
-- Added `docs/WORLD_MAP.md` (zone layout, spawn, priorities).  
-- Foundation + world map en `main` vía PR #1.
+- Split FE/BE documentado; AI_GUIDE; world map; content base.
 
 ### 2026-07-17 — Foundation
 
-- Visión inicial, stack de juego, Uruguay map concept.  
-- Public repo: https://github.com/leandmartine/conoceme-aun-mas
+- Visión inicial y repo público.
 
 ---
 
@@ -47,9 +42,9 @@
 
 | Block | Status |
 |-------|--------|
-| Profile base | ✅ `content/profile.json` |
-| Places stub | ✅ md + index |
-| Timeline laboral fino | ⬜ ampliar desde LinkedIn |
+| Profile base | ✅ |
+| Places stub | ✅ |
+| Timeline laboral fino | ⬜ |
 | ORT detalle | ⬜ |
 | Proyectos skyline | ⬜ |
 | Knowledge IA | ⬜ |
@@ -60,14 +55,13 @@
 
 | PR | State |
 |----|-------|
-| Foundation | ✅ en main |
-| docs: world map (#1) | ✅ merged |
-| docs: architecture + profile + AI + compass (#2) | 🔵 conflictos resueltos — lista para merge |
-| chore: monorepo scaffold | ⬜ |
-| feat(api): profile + places | ⬜ |
-| feat(shell): intro | ⬜ |
+| Foundation | ✅ |
+| docs: world map (#1) | ✅ |
+| docs: architecture + profile + AI (#2) | ✅ |
+| chore: monorepo scaffold (#3) | 🔵 lista cuando CI pase |
+| feat(shell): GSAP intro | ⬜ |
 | feat(game): player + compass | ⬜ |
-| feat(ui): panels | ⬜ |
+| feat(ui): place panels | ⬜ |
 | feat(art): character + rambla | ⬜ |
 | feat(ai): stub + api key | ⬜ |
-| chore: deploy + CI | ⬜ |
+| chore: deploy | ⬜ |

@@ -1,0 +1,189 @@
+.shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(126, 182, 217, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(244, 196, 48, 0.12), transparent 55%),
+    radial-gradient(800px 700px at 50% 100%, rgba(27, 79, 114, 0.45), transparent 60%),
+    var(--uy-night);
+}
+
+.shell__grain {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+.shell__glow {
+  pointer-events: none;
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  left: 50%;
+  top: 10%;
+  translate: -50% 0;
+  background: radial-gradient(circle, rgba(224, 122, 95, 0.18), transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.shell__hero,
+.shell__panel,
+.shell__about {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+}
+
+.shell__hero {
+  padding-top: clamp(2rem, 12vh, 6rem);
+  padding-bottom: 2.5rem;
+}
+
+.shell__kicker {
+  margin: 0 0 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(247, 242, 233, 0.55);
+}
+
+.shell__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.8rem, 9vw, 5.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.shell__subtitle {
+  margin: 1.25rem 0 0;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  color: rgba(247, 242, 233, 0.78);
+  max-width: 28rem;
+}
+
+.shell__status {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+}
+
+.shell__status--ok {
+  color: #8fd6a8;
+}
+
+.shell__status--err {
+  color: #ffb4a8;
+}
+
+.shell__cta {
+  margin-top: 2rem;
+  border: 1px solid rgba(247, 242, 233, 0.2);
+  background: rgba(247, 242, 233, 0.06);
+  color: rgba(247, 242, 233, 0.45);
+  border-radius: 999px;
+  padding: 0.9rem 1.4rem;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.shell__cta:not(:disabled):hover {
+  background: rgba(224, 122, 95, 0.2);
+  border-color: rgba(224, 122, 95, 0.55);
+  color: var(--uy-cream);
+}
+
+.shell__panel,
+.shell__about {
+  margin-top: 1.5rem;
+  padding: 1.4rem 1.35rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(247, 242, 233, 0.1);
+  background: rgba(11, 18, 32, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.shell__panel-title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 400;
+}
+
+.shell__places {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.shell__place {
+  display: grid;
+  grid-template-columns: 4.2rem 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(247, 242, 233, 0.06);
+}
+
+.shell__place:last-child {
+  border-bottom: 0;
+}
+
+.shell__place-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--uy-sun);
+}
+
+.shell__place-title {
+  font-size: 0.95rem;
+  color: rgba(247, 242, 233, 0.88);
+}
+
+.shell__hint {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  color: rgba(247, 242, 233, 0.55);
+  line-height: 1.45;
+}
+
+.shell__summary {
+  margin: 0;
+  line-height: 1.55;
+  color: rgba(247, 242, 233, 0.82);
+}
+
+.shell__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.1rem;
+  margin-top: 1.15rem;
+}
+
+.shell__link {
+  color: var(--uy-sky);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.shell__link:hover {
+  border-bottom-color: var(--uy-sky);
+  color: var(--uy-cream);
+}
+
+@media (max-width: 640px) {
+  .shell__place {
+    grid-template-columns: 3.5rem 1fr;
+  }
+}

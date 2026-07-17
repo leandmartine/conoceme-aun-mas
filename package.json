@@ -1,0 +1,21 @@
+{
+  "name": "conoceme-aun-mas",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Portfolio-juego: shell cinematográfica + Phaser + API REST",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "prepare": "npm run build -w @conoceme/shared",
+    "dev:frontend": "npm run dev -w @conoceme/frontend",
+    "dev:backend": "npm run dev -w @conoceme/backend",
+    "build": "npm run build -w @conoceme/shared && npm run build -w @conoceme/backend && npm run build -w @conoceme/frontend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run typecheck"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
