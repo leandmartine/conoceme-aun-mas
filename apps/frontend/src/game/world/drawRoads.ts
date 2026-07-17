@@ -1,3 +1,4 @@
+import type Phaser from 'phaser';
 import type { PlaceId } from '@conoceme/shared';
 import { ROAD_LINKS, type WorldPoi } from './mapLayout';
 
