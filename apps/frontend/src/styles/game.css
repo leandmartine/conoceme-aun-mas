@@ -24,6 +24,19 @@
     #0b1220;
 }
 
+.game-loading__portrait {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 2px solid rgba(244, 196, 48, 0.55);
+  box-shadow:
+    0 0 0 4px rgba(11, 18, 32, 0.6),
+    0 12px 28px rgba(0, 0, 0, 0.35);
+  margin-bottom: 0.35rem;
+}
+
 .game-loading__title {
   margin: 0;
   font-family: 'Instrument Serif', Georgia, serif;
@@ -222,6 +235,36 @@
   padding-right: 0.65rem;
 }
 
+.game-topbar__identity {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.55rem 0.2rem 0.2rem;
+  border-radius: 999px;
+  background: rgba(11, 18, 32, 0.72);
+  border: 1px solid rgba(247, 242, 233, 0.14);
+  backdrop-filter: blur(8px);
+}
+
+.game-topbar__portrait {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1.5px solid rgba(244, 196, 48, 0.65);
+  display: block;
+  flex-shrink: 0;
+}
+
+.game-topbar__you {
+  font: 600 0.72rem/1 'DM Sans', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.7);
+  padding-right: 0.2rem;
+}
+
 .game-topbar__hint {
   margin: 0;
   font-size: 0.75rem;
@@ -261,6 +304,15 @@
 @media (max-width: 640px) {
   .game-topbar__hint {
     display: none;
+  }
+
+  .game-topbar__you {
+    display: none;
+  }
+
+  .game-topbar__portrait {
+    width: 32px;
+    height: 32px;
   }
 
   .game-dev-banner {

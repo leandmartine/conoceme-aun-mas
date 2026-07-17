@@ -94,7 +94,10 @@
     "build": "tall_large",
     "skin": "cafe_con_leche",
     "eyes": "dark",
-    "hair": "black"
+    "hair": "black_volume_short_sides",
+    "outfit": "grey_marled_quarter_zip",
+    "inGame": "procedural_canvas_spritesheet_48x76_4dir",
+    "hudPortrait": "/media/leandro.jpg"
   },
   "source": {
     "linkedin": "https://www.linkedin.com/in/leandmartine/",

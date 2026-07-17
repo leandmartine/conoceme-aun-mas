@@ -176,6 +176,17 @@ export class WorldScene extends Phaser.Scene {
     bar.className = 'game-topbar';
     bar.innerHTML = `
       <button type="button" class="game-topbar__btn" data-exit>← Salir</button>
+      <div class="game-topbar__identity" title="Leandro · personaje del mapa">
+        <img
+          class="game-topbar__portrait"
+          src="/media/leandro.jpg"
+          alt="Leandro Emanuel Martinez"
+          width="40"
+          height="40"
+          decoding="async"
+        />
+        <span class="game-topbar__you">Vos</span>
+      </div>
       <p class="game-topbar__hint">WASD · E interactuar · Shift / botón para correr</p>
       <p class="game-topbar__progress" data-progress></p>
       <button type="button" class="game-topbar__btn game-topbar__btn--mute" data-mute aria-label="Silenciar">
