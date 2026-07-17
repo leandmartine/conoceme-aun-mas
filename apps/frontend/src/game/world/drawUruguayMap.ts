@@ -58,9 +58,25 @@ export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
   const waterFx = scene.add.graphics().setDepth(1.1);
   waterFx.fillStyle(0x0a2a42, 0.22);
   waterFx.fillRect(0, coastY + waterH * 0.45, W, waterH * 0.55);
-  // foam line at coast
-  waterFx.fillStyle(0xf7f2e9, 0.12);
-  waterFx.fillRect(0, coastY, W, 6);
+  // Shallow turquoise band near shore (Rambla-facing)
+  waterFx.fillStyle(0x4a9bb8, 0.12);
+  waterFx.fillRect(0, coastY, W, Math.min(48, waterH * 0.22));
+  // Sun path glitter on water (SE-ish)
+  waterFx.fillStyle(0xf4c430, 0.06);
+  waterFx.fillEllipse(W * 0.62, coastY + waterH * 0.28, W * 0.35, waterH * 0.2);
+  // Undulating foam line at coast
+  waterFx.fillStyle(0xf7f2e9, 0.18);
+  waterFx.fillRect(0, coastY, W, 5);
+  waterFx.fillStyle(0xf7f2e9, 0.1);
+  for (let x = 0; x < W; x += 48) {
+    const mid = x + 24;
+    const dip = 4 + ((x / 48) % 3) * 2;
+    waterFx.fillEllipse(mid, coastY + dip, 36, 8);
+  }
+  waterFx.fillStyle(0xffffff, 0.06);
+  for (let x = 20; x < W; x += 70) {
+    waterFx.fillEllipse(x, coastY + 14 + (x % 3) * 3, 22, 5);
+  }
 
   // —— 2: Roads on land (above ocean so bridges/quays read, but drawn before props) ——
   const roads = scene.add.graphics().setDepth(2);
