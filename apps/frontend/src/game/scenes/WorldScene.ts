@@ -21,7 +21,8 @@ export interface WorldSceneData {
   onExit?: () => void | Promise<void>;
 }
 
-const SPEED = 210;
+const WALK_SPEED = 210;
+const RUN_SPEED = 380;
 const INTERACT_RADIUS = 70;
 
 export class WorldScene extends Phaser.Scene {
@@ -49,6 +50,9 @@ export class WorldScene extends Phaser.Scene {
   private progressLabel!: HTMLElement | null;
   private nearRing!: Phaser.GameObjects.Arc;
   private completionShown = false;
+  private sprintKey!: Phaser.Input.Keyboard.Key;
+  private sprintHeld = false;
+  private sprintBtn!: HTMLButtonElement | null;
 
   constructor() {
     super('World');
@@ -128,6 +132,7 @@ export class WorldScene extends Phaser.Scene {
       d: kb.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
     this.interactKey = kb.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    this.sprintKey = kb.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
     this.joystick = new VirtualJoystick(this);
     this.visited = loadVisited();
@@ -162,25 +167,7 @@ export class WorldScene extends Phaser.Scene {
       .setDepth(15)
       .setVisible(false);
 
-    // Mobile interact button
-    const interactBtn = this.add
-      .circle(this.cameras.main.width - 72, this.cameras.main.height - 100, 36, 0xe07a5f, 0.9)
-      .setScrollFactor(0)
-      .setDepth(1000)
-      .setInteractive({ useHandCursor: true })
-      .setStrokeStyle(2, 0xf7f2e9, 0.35);
-    this.add
-      .text(this.cameras.main.width - 72, this.cameras.main.height - 100, 'E', {
-        fontFamily: 'DM Sans, system-ui',
-        fontSize: '18px',
-        color: '#f7f2e9',
-        fontStyle: 'bold',
-      })
-      .setScrollFactor(0)
-      .setDepth(1001)
-      .setOrigin(0.5);
-    interactBtn.on('pointerdown', () => this.tryInteract());
-
+    // Mobile interact + sprint (DOM so they work over canvas)
     this.mountDomHud(data);
   }
 
@@ -189,7 +176,7 @@ export class WorldScene extends Phaser.Scene {
     bar.className = 'game-topbar';
     bar.innerHTML = `
       <button type="button" class="game-topbar__btn" data-exit>← Salir</button>
-      <p class="game-topbar__hint">WASD / flechas · E interactuar · brújula abajo-derecha</p>
+      <p class="game-topbar__hint">WASD · E interactuar · Shift / botón para correr</p>
       <p class="game-topbar__progress" data-progress></p>
       <button type="button" class="game-topbar__btn game-topbar__btn--mute" data-mute aria-label="Silenciar">
         ${gameAudio.isMuted() ? '🔇' : '🔊'}
@@ -207,6 +194,37 @@ export class WorldScene extends Phaser.Scene {
       gameAudio.setMuted(!gameAudio.isMuted());
       if (muteBtn) muteBtn.textContent = gameAudio.isMuted() ? '🔇' : '🔊';
     });
+
+    const actions = document.createElement('div');
+    actions.className = 'game-actions';
+    actions.innerHTML = `
+      <button type="button" class="game-actions__btn game-actions__btn--sprint" data-sprint aria-pressed="false" title="Correr (Shift)">
+        Correr
+      </button>
+      <button type="button" class="game-actions__btn game-actions__btn--interact" data-interact title="Interactuar (E)">
+        E
+      </button>
+    `;
+    this.hudHost.append(actions);
+    this.sprintBtn = actions.querySelector('[data-sprint]');
+    actions.querySelector('[data-interact]')?.addEventListener('click', () => this.tryInteract());
+
+    const sprint = this.sprintBtn;
+    if (sprint) {
+      const setSprint = (on: boolean) => {
+        this.sprintHeld = on;
+        sprint.setAttribute('aria-pressed', on ? 'true' : 'false');
+        sprint.classList.toggle('is-active', on);
+      };
+      // Hold on mobile / click-toggle on desktop
+      sprint.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        setSprint(true);
+      });
+      sprint.addEventListener('pointerup', () => setSprint(false));
+      sprint.addEventListener('pointerleave', () => setSprint(false));
+      sprint.addEventListener('pointercancel', () => setSprint(false));
+    }
 
     // First-time coach mark
     try {
@@ -232,6 +250,8 @@ export class WorldScene extends Phaser.Scene {
   override update(): void {
     if (!this.player?.body) return;
     if (this.placePanel.isOpen) {
+      // Let the DOM panel receive wheel/touch; pause game input on canvas
+      this.input.keyboard?.resetKeys();
       this.player.setVelocity(0, 0);
       this.playerShadow?.setPosition(this.player.x, this.player.y + 30);
       const idle = `idle-${this.facing}`;
@@ -257,9 +277,11 @@ export class WorldScene extends Phaser.Scene {
       vy /= len;
     }
 
-    this.player.setVelocity(vx * SPEED, vy * SPEED);
+    const running = this.sprintHeld || this.sprintKey?.isDown;
+    const speed = running ? RUN_SPEED : WALK_SPEED;
+    this.player.setVelocity(vx * speed, vy * speed);
     this.playerShadow.setPosition(this.player.x, this.player.y + 30);
-    this.updatePlayerAnim(vx, vy, len);
+    this.updatePlayerAnim(vx, vy, len, running);
 
     this.updateNearest();
     this.compass.update({
@@ -354,7 +376,7 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  private updatePlayerAnim(vx: number, vy: number, len: number): void {
+  private updatePlayerAnim(vx: number, vy: number, len: number, running: boolean): void {
     if (len > 0.08) {
       if (Math.abs(vx) > Math.abs(vy)) {
         this.facing = vx < 0 ? 'left' : 'right';
@@ -365,11 +387,13 @@ export class WorldScene extends Phaser.Scene {
       if (this.player.anims.currentAnim?.key !== walk) {
         this.player.play(walk, true);
       }
+      this.player.anims.timeScale = running ? 1.55 : 1;
     } else {
       const idle = `idle-${this.facing}`;
       if (this.player.anims.currentAnim?.key !== idle) {
         this.player.play(idle, true);
       }
+      this.player.anims.timeScale = 1;
     }
   }
 

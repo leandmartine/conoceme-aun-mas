@@ -86,6 +86,51 @@
   transform: translateY(0);
 }
 
+/* Action buttons (sprint + interact) */
+.game-actions {
+  position: absolute;
+  right: max(0.85rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: flex-end;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.game-actions__btn {
+  pointer-events: auto;
+  border: 1px solid rgba(247, 242, 233, 0.22);
+  border-radius: 999px;
+  font: 600 0.85rem/1 'DM Sans', system-ui, sans-serif;
+  color: #f7f2e9;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.game-actions__btn--sprint {
+  min-width: 5.5rem;
+  padding: 0.75rem 1.1rem;
+  background: rgba(11, 18, 32, 0.78);
+}
+
+.game-actions__btn--sprint.is-active {
+  background: linear-gradient(180deg, rgba(244, 196, 48, 0.55), rgba(224, 122, 95, 0.45));
+  border-color: rgba(244, 196, 48, 0.65);
+}
+
+.game-actions__btn--interact {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(224, 122, 95, 0.95), rgba(224, 122, 95, 0.7));
+  border-color: rgba(247, 242, 233, 0.35);
+  font-size: 1.05rem;
+}
+
 /* Top bar DOM */
 .game-topbar {
   position: absolute;
@@ -98,6 +143,7 @@
   padding: 0.75rem 1rem;
   padding-top: max(0.75rem, env(safe-area-inset-top));
   pointer-events: none;
+  z-index: 120;
 }
 
 .game-topbar > * {
@@ -385,10 +431,11 @@ body.mode-game #app {
   color: rgba(247, 242, 233, 0.55);
 }
 
-/* Place panel overlay */
+/* Place panel overlay — scrollable body for long content */
 .place-panel {
   position: absolute;
   inset: 0;
+  z-index: 300;
   display: grid;
   place-items: end center;
   padding: 1rem;
@@ -397,6 +444,8 @@ body.mode-game #app {
   backdrop-filter: blur(6px);
   opacity: 0;
   transition: opacity 0.22s ease;
+  pointer-events: auto !important;
+  touch-action: none;
 }
 
 .place-panel--in {
@@ -414,10 +463,11 @@ body.mode-game #app {
 .place-panel__card {
   --place-accent: #7eb6d9;
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(440px, 100%);
-  max-height: min(72dvh, 560px);
-  overflow: auto;
-  padding: 1.35rem 1.35rem 1.15rem;
+  max-height: min(78dvh, 620px);
+  overflow: hidden;
   border-radius: 1.2rem;
   border: 1px solid rgba(247, 242, 233, 0.12);
   background:
@@ -427,10 +477,42 @@ body.mode-game #app {
   color: #f7f2e9;
   transform: translateY(24px);
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: auto;
+  touch-action: pan-y;
 }
 
 .place-panel--in .place-panel__card {
   transform: translateY(0);
+}
+
+.place-panel__head {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 1.2rem 1.25rem 0.65rem 1.25rem;
+  border-bottom: 1px solid rgba(247, 242, 233, 0.08);
+}
+
+.place-panel__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0.85rem 1.25rem 1.15rem;
+  scrollbar-gutter: stable;
+}
+
+.place-panel__scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.place-panel__scroll::-webkit-scrollbar-thumb {
+  background: rgba(247, 242, 233, 0.22);
+  border-radius: 999px;
+}
+.place-panel__scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .place-panel__accent {
@@ -441,12 +523,14 @@ body.mode-game #app {
   width: 4px;
   border-radius: 999px;
   background: var(--place-accent);
+  pointer-events: none;
 }
 
 .place-panel__close {
   position: absolute;
   top: 0.7rem;
   right: 0.8rem;
+  z-index: 2;
   width: 2rem;
   height: 2rem;
   border: 1px solid rgba(247, 242, 233, 0.12);
@@ -465,6 +549,7 @@ body.mode-game #app {
 .place-panel__eyebrow {
   margin: 0 0 0.35rem;
   padding-left: 0.65rem;
+  padding-right: 2rem;
   font-size: 0.68rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -480,7 +565,7 @@ body.mode-game #app {
 }
 
 .place-panel__meta {
-  margin: 0 0 0.9rem 0.65rem;
+  margin: 0 0 0.25rem 0.65rem;
   font-size: 0.88rem;
   color: rgba(247, 242, 233, 0.55);
 }
@@ -518,7 +603,7 @@ body.mode-game #app {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  margin-top: 0.35rem;
+  margin-top: 0.85rem;
   padding-left: 0.65rem;
 }
 
