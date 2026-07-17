@@ -6,6 +6,7 @@ export interface CompassState {
   playerY: number;
   pois: WorldPoi[];
   focusedId: PlaceId | null;
+  visited: Set<PlaceId>;
 }
 
 /**
@@ -17,7 +18,10 @@ export class CompassHud {
   private markers = new Map<string, HTMLElement>();
   private bearingEl: HTMLElement;
   private labelEl: HTMLElement;
+  private progressEl: HTMLElement;
   private focusedId: PlaceId | null = null;
+  private visited = new Set<PlaceId>();
+  private total = 0;
   private onFocus: ((id: PlaceId | null) => void) | null = null;
   private lastUpdate = 0;
 
@@ -25,6 +29,7 @@ export class CompassHud {
     this.root = document.createElement('div');
     this.root.className = 'compass';
     this.root.innerHTML = `
+      <p class="compass__progress" data-progress>0 / 0 explorados</p>
       <div class="compass__ring" aria-hidden="true"></div>
       <div class="compass__disc" data-disc>
         <span class="compass__n">N</span>
@@ -37,13 +42,22 @@ export class CompassHud {
     this.disc = this.root.querySelector('[data-disc]') as HTMLElement;
     this.bearingEl = this.root.querySelector('[data-bearing]') as HTMLElement;
     this.labelEl = this.root.querySelector('[data-label]') as HTMLElement;
+    this.progressEl = this.root.querySelector('[data-progress]') as HTMLElement;
   }
 
   setFocusHandler(handler: (id: PlaceId | null) => void): void {
     this.onFocus = handler;
   }
 
-  setPois(pois: WorldPoi[]): void {
+  setVisited(visited: Set<PlaceId>): void {
+    this.visited = visited;
+    this.refreshVisitedStyles();
+    this.refreshProgress();
+  }
+
+  setPois(pois: WorldPoi[], visited: Set<PlaceId>): void {
+    this.total = pois.length;
+    this.visited = visited;
     this.markers.forEach((m) => m.remove());
     this.markers.clear();
     for (const poi of pois) {
@@ -66,10 +80,11 @@ export class CompassHud {
       this.disc.append(m);
       this.markers.set(poi.id, m);
     }
+    this.refreshVisitedStyles();
+    this.refreshProgress();
   }
 
   update(state: CompassState, now = performance.now()): void {
-    // ~12 Hz
     if (now - this.lastUpdate < 80) return;
     this.lastUpdate = now;
 
@@ -80,7 +95,6 @@ export class CompassHud {
       const dx = poi.x - state.playerX;
       const dy = poi.y - state.playerY;
       const dist = Math.hypot(dx, dy) || 1;
-      // Map distance to ring (closer = closer to center, min edge)
       const t = Math.min(1, dist / 900);
       const r = 18 + t * (radius - 18);
       const ang = Math.atan2(dy, dx);
@@ -104,5 +118,21 @@ export class CompassHud {
 
   destroy(): void {
     this.root.remove();
+  }
+
+  private refreshVisitedStyles(): void {
+    this.markers.forEach((el, id) => {
+      el.classList.toggle('compass__marker--visited', this.visited.has(id as PlaceId));
+    });
+  }
+
+  private refreshProgress(): void {
+    this.progressEl.textContent = `${this.visited.size} / ${this.total} explorados`;
+    if (this.total > 0 && this.visited.size >= this.total) {
+      this.progressEl.classList.add('compass__progress--done');
+      this.progressEl.textContent = `✓ ${this.total}/${this.total} — mapa completo`;
+    } else {
+      this.progressEl.classList.remove('compass__progress--done');
+    }
   }
 }

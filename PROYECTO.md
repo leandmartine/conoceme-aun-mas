@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Polish paneles + handoff — seguir en localhost hasta que sea potable |
+| **Status** | 🟡 Content + progreso de exploración — seguir localhost |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -19,6 +19,12 @@
 ---
 
 ## Changelog
+
+### 2026-07-17 — Content depth + visited progress
+
+- Textos más ricos en los 7 lugares (experiencia, proyectos, contacto…).  
+- Progress: lugares visitados en brújula + topbar; toast al completar el mapa.  
+- Anillo de interacción al acercarte a un POI.
 
 ### 2026-07-17 — Polish panels + handoff
 
@@ -74,10 +80,10 @@
 | Block | Status |
 |-------|--------|
 | Profile base | ✅ |
-| Places stub | ✅ |
-| Timeline laboral fino | ⬜ |
-| ORT detalle | ⬜ |
-| Proyectos skyline | ⬜ |
+| Places narrative | ✅ (ampliable) |
+| Timeline laboral fino | ⬜ fechas exactas |
+| ORT carrera exacta | ⬜ |
+| Proyectos skyline extra | ⬜ |
 | Knowledge IA | ⬜ |
 
 ---
