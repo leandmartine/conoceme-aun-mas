@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Monorepo scaffold — shell básica + API profile/places |
+| **Status** | 🟡 Shell cinematográfica GSAP/Lenis — juego Phaser next |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -13,12 +13,18 @@
 
 ## Current focus
 
-1. Merge monorepo scaffold (esta PR).  
-2. Siguiente: GSAP intro shell y/o Phaser player + compass.
+1. Merge shell cinematográfica (esta PR).  
+2. Siguiente: Phaser player + minimapa brújula.
 
 ---
 
 ## Changelog
+
+### 2026-07-17 — Shell cinematic
+
+- GSAP + ScrollTrigger + Lenis en la intro.  
+- Stage full-viewport con silueta Uruguay, chapters, cards de lugares.  
+- CTA “Explorar el mapa” con scroll suave.
 
 ### 2026-07-17 — Monorepo scaffold
 
@@ -58,8 +64,8 @@
 | Foundation | ✅ |
 | docs: world map (#1) | ✅ |
 | docs: architecture + profile + AI (#2) | ✅ |
-| chore: monorepo scaffold (#3) | 🔵 lista cuando CI pase |
-| feat(shell): GSAP intro | ⬜ |
+| chore: monorepo scaffold (#3) | ✅ |
+| feat(shell): GSAP intro | 🔵 esta PR |
 | feat(game): player + compass | ⬜ |
 | feat(ui): place panels | ⬜ |
 | feat(art): character + rambla | ⬜ |

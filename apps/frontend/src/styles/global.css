@@ -18,6 +18,11 @@
   box-sizing: border-box;
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
 html,
 body {
   margin: 0;
@@ -30,6 +35,11 @@ body {
 
 body {
   min-height: 100dvh;
+}
+
+/* Lenis recommends this for smoother fixed elements */
+html.lenis {
+  overflow-x: clip;
 }
 
 #app {
