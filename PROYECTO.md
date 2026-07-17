@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Content + progreso de exploración — seguir localhost |
+| **Status** | 🟡 Layout costero compacto + caminos + distritos densos |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -19,6 +19,13 @@
 ---
 
 ## Changelog
+
+### 2026-07-17 — World layout fix
+
+- Mapa compacto (1600px): spawn cerca de todo.  
+- Puerto en bahía oeste y Faro en punta este (sobre agua).  
+- Caminos curvos tipo calle, no rectas.  
+- Distritos con más props (muelles, torres, plaza, campus, campo).
 
 ### 2026-07-17 — Content depth + visited progress
 

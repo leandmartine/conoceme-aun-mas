@@ -9,23 +9,23 @@ Layout espacial del mundo top-down. No es cartografía real: es un **mapa legibl
 ## Layout
 
 ```
-                    N
-                    ▲
-        [CAMPO]     │     [UNIVERSIDAD]
-           ·        │          ·
-            \       │         /
-             \      │        /
-    [PUERTO] ·------★------· [SKYLINE]
-             /   (centro)    \
-            /    Ciudad       \
-           ·                   ·
-      [CIUDAD VIEJA]      [FARO / ESTE]
-           ·
-           │
-      [RAMBLA]  ← spawn post-intro
-           │
-           ▼ S (Río / mar)
+                         N
+                         ▲
+              [CAMPO]   │  [UNIVERSIDAD]
+                 ·      │       ·
+                  \     │      /
+                   \    │     /
+              [CIUDAD VIEJA]—[SKYLINE]
+                   /    │     \
+                  /     │      \
+        [PUERTO] ·——[RAMBLA]——· [FARO]
+         (bahía O)  spawn ↑   (punta E)
+                    │
+                    ▼ S  Río de la Plata
 ```
+
+Geografía: puerto y faro **sobre la costa**, no en el medio del campo.
+Cluster compacto: distancias cortas desde la Rambla.
 
 ---
 
