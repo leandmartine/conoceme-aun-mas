@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.github
+.env
+.env.*
+!.env.example
+*.md
+!content/**/*.md
+.DS_Store
+coverage
+**/*.log
+apps/frontend/public/brand

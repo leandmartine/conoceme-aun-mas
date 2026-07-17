@@ -20,32 +20,26 @@ export function classifyIntent(message: string): {
 
   const lower = text.toLowerCase();
 
-  // Exfil / prompt leak
+  // Prompt exfil first (more specific than general jailbreak)
   if (
-    /system\s*prompt|instrucciones\s*internas|revel[ae].*prompt|show.*(system|hidden).*prompt|ignore\s+(all\s+)?(previous|prior|above)/i.test(
-      text,
-    ) ||
-    /dan\s*mode|developer\s*mode|jailbreak|modo\s*dios|actúa como|actua como si no tuvieras reglas/i.test(
+    /revel[aá].*(prompt|reglas|system)|print\s+your\s+instructions|what\s+are\s+your\s+rules|instrucciones\s*internas|show.*(system|hidden).*prompt/i.test(
       lower,
     )
   ) {
-    return { kind: 'jailbreak', reason: 'JAILBREAK' };
+    return { kind: 'exfil_prompt', reason: 'EXFIL_PROMPT' };
   }
 
+  // Jailbreak / role override
   if (
+    /system\s*prompt|ignore\s+(all\s+)?(previous|prior|above)/i.test(text) ||
+    /dan\s*mode|developer\s*mode|jailbreak|modo\s*dios|actúa como|actua como si no tuvieras reglas/i.test(
+      lower,
+    ) ||
     /ignor[aá]\s+(las\s+)?(reglas|instrucciones)|olvid[aá]\s+tus\s+instrucciones|bypass|unfiltered/i.test(
       lower,
     )
   ) {
     return { kind: 'jailbreak', reason: 'JAILBREAK' };
-  }
-
-  if (
-    /revel[aá].*(prompt|reglas|system)|print\s+your\s+instructions|what\s+are\s+your\s+rules/i.test(
-      lower,
-    )
-  ) {
-    return { kind: 'exfil_prompt', reason: 'EXFIL_PROMPT' };
   }
 
   // Format escape

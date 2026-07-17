@@ -37,6 +37,9 @@ console.log(`[backend] content root: ${env.contentRoot}`);
 console.log(
   `[backend] AI keys: ${env.apiKeys.size > 0 ? env.apiKeys.size + ' configured' : 'none (chat disabled)'}`,
 );
+console.log(
+  `[backend] static: ${env.staticRoot ?? 'off (API only — use Vite in dev)'}`,
+);
 console.log(`[backend] listening on http://${env.HOST}:${env.PORT}`);
 
 serve({

@@ -18,7 +18,7 @@ No es una web más: es una experiencia cinematográfica + mundo top-down.
 1. **Shell cinematográfica** — intro con scroll (GSAP + Lenis)  
 2. **Mundo jugable** — personaje top-down, zonas de Uruguay, **minimapa tipo brújula**  
 3. **API REST** — perfil, lugares, y (más adelante) consultas con API key sobre quién soy / estado del jugador  
-4. **Compañero IA** (futuro) — responde sobre mí y el mundo del juego, sin salirse de tema  
+4. **Compañero IA** (stub grounded) — responde sobre mí y el mapa; requiere API key; LLM opcional después  
 
 Todo el contenido del mapa está **disponible desde el inicio**: el visitante elige a dónde ir.
 
@@ -61,6 +61,8 @@ npm run dev:backend    # http://localhost:8787
 npm run dev:frontend   # http://localhost:5173  (proxy /api → backend)
 ```
 
+Copiá `.env.example` → `.env` y, para el companion del juego, `apps/frontend/.env` con `VITE_PORTFOLIO_API_KEY`.
+
 API útil:
 
 - `GET /api/v1/health`
@@ -68,6 +70,26 @@ API útil:
 - `GET /api/v1/places`
 - `GET /api/v1/places/:id`
 - `GET|PUT /api/v1/player/state`
+- `GET /api/v1/ai/status`
+- `POST /api/v1/ai/chat` (API key)
+
+```bash
+npm run typecheck
+npm test
+npm run build
+```
+
+## Deploy
+
+Scaffold listo (Docker + SPA+API same-origin). **Publicar solo cuando Leandro lo pida.**  
+Guía: [`docs/DEPLOY.md`](./docs/DEPLOY.md).
+
+```bash
+# smoke local estilo prod (no sube a internet)
+export PORTFOLIO_API_KEYS=dev-local-key
+docker compose up --build
+# http://localhost:8787
+```
 
 ---
 
