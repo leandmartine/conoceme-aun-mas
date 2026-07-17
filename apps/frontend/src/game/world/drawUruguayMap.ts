@@ -2,11 +2,9 @@ import Phaser from 'phaser';
 import { WORLD_SIZE, type WorldPoi } from './mapLayout';
 
 /**
- * Stylized Uruguay top-down: biomes anchored to real POI positions.
- * South feel = Río + Rambla · west = Puerto · center = ciudad · north = campo · east = faro.
+ * Stylized Uruguay top-down with textured biomes (grass/sand/water/cobble).
  */
 export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
-  const g = scene.add.graphics().setDepth(0);
   const W = WORLD_SIZE;
   const H = WORLD_SIZE;
   const byId = Object.fromEntries(pois.map((p) => [p.id, p])) as Partial<
@@ -21,81 +19,89 @@ export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
   const campo = byId.campo;
   const faro = byId.faro;
 
-  // —— Base land (warm green-grey countryside / periurbano) ——
-  g.fillStyle(0x4f7a58, 1);
-  g.fillRect(0, 0, W, H);
+  // Base grass texture full world
+  const grass = scene.add
+    .tileSprite(W / 2, H / 2, W, H, 'tex-grass')
+    .setDepth(0);
+  grass.setTint(0xd0e8d4);
 
-  // Soft sky-haze north (atmosphere)
-  g.fillStyle(0x8eb8d4, 0.12);
-  g.fillRect(0, 0, W, H * 0.2);
+  // Soft north haze
+  const g = scene.add.graphics().setDepth(0.5);
+  g.fillStyle(0x8eb8d4, 0.1);
+  g.fillRect(0, 0, W, H * 0.18);
 
-  // —— Campo (north, around campo POI) ——
+  // —— Campo ——
   if (campo) {
-    g.fillStyle(0x5d8f4e, 1);
+    const campoGrass = scene.add
+      .tileSprite(campo.x, campo.y, 520, 420, 'tex-grass')
+      .setDepth(0.6);
+    campoGrass.setTint(0xb8e0a8);
+    // elliptical mask feel via overlay
+    g.fillStyle(0x5d8f4e, 0.15);
     g.fillEllipse(campo.x, campo.y, 520, 420);
-    g.fillStyle(0x6fa05c, 0.45);
-    g.fillEllipse(campo.x - 40, campo.y - 30, 280, 200);
-    g.fillStyle(0xc4a574, 0.25);
-    // rural track
-    g.lineStyle(16, 0xc4a574, 0.4);
+    g.lineStyle(14, 0xc4a574, 0.45);
     g.lineBetween(campo.x - 180, campo.y + 40, campo.x + 160, campo.y - 20);
     drawTree(g, campo.x - 90, campo.y - 40, 32);
     drawTree(g, campo.x + 70, campo.y + 20, 26);
     drawTree(g, campo.x + 20, campo.y - 70, 22);
-  } else {
-    g.fillStyle(0x5d8f4e, 1);
-    g.fillEllipse(W * 0.4, H * 0.22, 600, 400);
+    drawTree(g, campo.x - 40, campo.y + 50, 20);
   }
 
-  // —— Universidad campus ——
+  // —— Universidad ——
   if (uni) {
-    g.fillStyle(0x5a8f66, 1);
+    g.fillStyle(0x5a8f66, 0.55);
     g.fillCircle(uni.x, uni.y, 130);
-    g.fillStyle(0x7eb68a, 0.35);
-    g.fillCircle(uni.x, uni.y, 80);
+    const lawn = scene.add.tileSprite(uni.x, uni.y, 200, 200, 'tex-grass').setDepth(0.7);
+    lawn.setTint(0xa8d4a0);
     g.fillStyle(0xefe6d8, 0.95);
     g.fillRect(uni.x - 55, uni.y - 30, 110, 20);
     g.fillRect(uni.x - 55, uni.y - 30, 20, 60);
     g.fillRect(uni.x + 35, uni.y - 30, 20, 60);
-    g.fillStyle(0x4a7c59, 0.5);
-    g.fillCircle(uni.x, uni.y + 45, 28); // patio
+    g.fillStyle(0x4a7c59, 0.45);
+    g.fillCircle(uni.x, uni.y + 45, 28);
   }
 
-  // —— Urban plate (ciudad + skyline) ——
+  // —— Urban plate ——
   if (ciudad && skyline) {
     const midX = (ciudad.x + skyline.x) / 2;
     const midY = (ciudad.y + skyline.y) / 2;
-    g.fillStyle(0x8b919a, 1);
+    g.fillStyle(0x8b919a, 0.85);
     g.fillRoundedRect(midX - 280, midY - 160, 560, 320, 36);
-    g.fillStyle(0x9aa3ae, 0.4);
-    g.fillRoundedRect(midX - 250, midY - 140, 500, 280, 28);
   }
 
-  // Ciudad Vieja — warm stone
+  // Ciudad Vieja — cobble texture
   if (ciudad) {
-    g.fillStyle(0xc4a574, 1);
-    g.fillRoundedRect(ciudad.x - 130, ciudad.y - 100, 260, 200, 18);
-    g.fillStyle(0xd8bc94, 0.45);
-    g.fillRoundedRect(ciudad.x - 110, ciudad.y - 80, 220, 160, 12);
+    const cobble = scene.add
+      .tileSprite(ciudad.x, ciudad.y, 280, 220, 'tex-cobble')
+      .setDepth(0.8);
+    cobble.setTint(0xf0e0c8);
+    g.fillStyle(0xc4a574, 0.2);
+    g.fillRoundedRect(ciudad.x - 140, ciudad.y - 110, 280, 220, 18);
     drawCityBlocks(g, ciudad.x - 95, ciudad.y - 70, 5, 4, 30, 24, 0xb8956a, 0x8b6914);
-    // plaza
     g.fillStyle(0xe8d5b5, 0.55);
     g.fillCircle(ciudad.x, ciudad.y + 10, 36);
   }
 
-  // Skyline — glass towers
+  // Skyline
   if (skyline) {
-    g.fillStyle(0x6a7d94, 1);
+    g.fillStyle(0x6a7d94, 0.9);
     g.fillRoundedRect(skyline.x - 120, skyline.y - 90, 240, 180, 14);
     drawSkyline(g, skyline.x - 100, skyline.y - 20, 7);
   }
 
   // —— Puerto ——
   if (puerto) {
-    g.fillStyle(0x1b4f72, 1);
-    g.fillRoundedRect(puerto.x - 140, puerto.y - 100, 260, 210, 28);
-    g.fillStyle(0x2a6a8f, 0.55);
-    g.fillRoundedRect(puerto.x - 120, puerto.y - 80, 220, 170, 20);
+    const waterP = scene.add
+      .tileSprite(puerto.x, puerto.y, 280, 220, 'tex-water')
+      .setDepth(0.7);
+    // slow scroll for life
+    scene.tweens.add({
+      targets: waterP,
+      tilePositionX: 64,
+      duration: 8000,
+      repeat: -1,
+      ease: 'Linear',
+    });
     g.fillStyle(0x6b5344, 0.95);
     for (let i = 0; i < 5; i++) {
       g.fillRect(puerto.x - 90 + i * 36, puerto.y - 20, 16, 85);
@@ -105,65 +111,64 @@ export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
     g.lineBetween(puerto.x - 70, puerto.y - 90, puerto.x - 20, puerto.y - 70);
     g.lineBetween(puerto.x + 40, puerto.y - 15, puerto.x + 40, puerto.y - 95);
     g.lineBetween(puerto.x + 40, puerto.y - 95, puerto.x + 90, puerto.y - 75);
-    // containers
-    g.fillStyle(0xe07a5f, 0.8);
+    g.fillStyle(0xe07a5f, 0.85);
     g.fillRect(puerto.x - 40, puerto.y + 40, 34, 22);
-    g.fillStyle(0xf4c430, 0.75);
+    g.fillStyle(0xf4c430, 0.8);
     g.fillRect(puerto.x + 5, puerto.y + 40, 34, 22);
   }
 
-  // —— Río de la Plata (south of rambla) ——
+  // —— Río ——
   const waterTop = rambla ? rambla.y + 40 : H * 0.72;
-  g.fillStyle(0x1b4f72, 1);
-  g.fillRect(0, waterTop, W, H - waterTop);
-  g.fillStyle(0x164566, 1);
-  g.fillRect(0, waterTop + 80, W, H - waterTop - 80);
-  g.fillStyle(0x0f3550, 1);
-  g.fillRect(0, waterTop + 160, W, Math.max(0, H - waterTop - 160));
-  g.lineStyle(2, 0x7eb6d9, 0.18);
-  for (let y = waterTop + 20; y < H; y += 32) {
-    g.beginPath();
-    for (let x = 0; x <= W; x += 48) {
-      const yy = y + Math.sin(x * 0.018 + y * 0.02) * 7;
-      if (x === 0) g.moveTo(x, yy);
-      else g.lineTo(x, yy);
-    }
-    g.strokePath();
-  }
+  const waterH = H - waterTop;
+  const river = scene.add
+    .tileSprite(W / 2, waterTop + waterH / 2, W, waterH, 'tex-water')
+    .setDepth(0.9);
+  scene.tweens.add({
+    targets: river,
+    tilePositionX: 128,
+    duration: 14000,
+    repeat: -1,
+    ease: 'Linear',
+  });
+  scene.tweens.add({
+    targets: river,
+    tilePositionY: 32,
+    duration: 9000,
+    yoyo: true,
+    repeat: -1,
+    ease: 'Sine.inOut',
+  });
 
-  // —— Rambla promenade ——
+  // —— Rambla sand ——
   if (rambla) {
     const ry = rambla.y + 10;
-    g.fillStyle(0xe8d5b5, 1);
-    g.fillRect(0, ry - 35, W, 70);
-    g.fillStyle(0xd4c0a0, 1);
-    g.fillRect(0, ry - 35, W, 12);
-    g.fillStyle(0xcfc4b0, 0.95);
-    g.fillRect(0, ry - 8, W, 20);
-    // rail / edge to water
-    g.fillStyle(0x8a9098, 0.7);
+    const sand = scene.add
+      .tileSprite(W / 2, ry, W, 80, 'tex-sand')
+      .setDepth(1);
+    sand.setTint(0xfff0d8);
+    g.setDepth(1.1);
+    g.fillStyle(0xd4c0a0, 0.7);
+    g.fillRect(0, ry - 35, W, 10);
+    g.fillStyle(0x8a9098, 0.65);
     g.fillRect(0, ry + 22, W, 6);
-    // lamps
     for (let x = 60; x < W; x += 130) {
       g.fillStyle(0x4a4a4a, 0.85);
       g.fillRect(x, ry - 40, 4, 28);
       g.fillStyle(0xf4c430, 0.4);
       g.fillCircle(x + 2, ry - 42, 7);
     }
-    // benches hint
     g.fillStyle(0x6b5344, 0.7);
     for (let x = 120; x < W; x += 200) {
       g.fillRect(x, ry + 2, 28, 6);
     }
   }
 
-  // —— Faro / east coast ——
+  // —— Faro ——
   if (faro) {
     g.fillStyle(0xb8956a, 1);
     g.fillTriangle(faro.x - 40, faro.y + 80, faro.x + 160, faro.y - 40, faro.x + 160, faro.y + 120);
-    g.fillStyle(0x1b4f72, 0.9);
+    g.fillStyle(0x1b4f72, 0.85);
     g.fillRect(faro.x + 40, faro.y + 40, 200, 160);
-    // tower
     g.fillStyle(0xf7f2e9, 1);
     g.fillRect(faro.x - 12, faro.y - 100, 24, 110);
     g.fillStyle(0xe07a5f, 1);
@@ -175,23 +180,26 @@ export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
     g.fillTriangle(faro.x, faro.y - 112, faro.x + 220, faro.y - 40, faro.x + 220, faro.y + 80);
   }
 
-  // —— Roads between places ——
-  drawRoads(g, pois);
+  // Roads with texture segments
+  drawRoads(scene, g, pois);
 
-  // Soft zone rings (readable, not noisy)
+  // Zone rings
   for (const poi of pois) {
-    g.fillStyle(poi.color, 0.1);
-    g.fillCircle(poi.x, poi.y, 88);
-    g.lineStyle(2, poi.color, 0.35);
+    g.lineStyle(2, poi.color, 0.4);
     g.strokeCircle(poi.x, poi.y, 88);
+    g.fillStyle(poi.color, 0.08);
+    g.fillCircle(poi.x, poi.y, 88);
   }
 
-  // Edge atmosphere
-  g.lineStyle(100, 0x1a3040, 0.1);
+  g.lineStyle(100, 0x1a3040, 0.08);
   g.strokeRect(50, 50, W - 100, H - 100);
 }
 
-function drawRoads(g: Phaser.GameObjects.Graphics, pois: WorldPoi[]): void {
+function drawRoads(
+  scene: Phaser.Scene,
+  g: Phaser.GameObjects.Graphics,
+  pois: WorldPoi[],
+): void {
   const byId = new Map(pois.map((p) => [p.id, p]));
   const links: Array<[WorldPoi['id'], WorldPoi['id']]> = [
     ['rambla', 'ciudad-vieja'],
@@ -204,20 +212,22 @@ function drawRoads(g: Phaser.GameObjects.Graphics, pois: WorldPoi[]): void {
     ['puerto', 'campo'],
   ];
 
-  g.lineStyle(20, 0x555b63, 0.5);
+  g.lineStyle(22, 0x555b63, 0.55);
+  for (const [a, b] of links) {
+    const pa = byId.get(a);
+    const pb = byId.get(b);
+    if (!pa || !pb) continue;
+    g.lineBetween(pa.x, pa.y, pb.x, pb.y);
+    // dashed gold center
+  }
+  g.lineStyle(3, 0xf4c430, 0.28);
   for (const [a, b] of links) {
     const pa = byId.get(a);
     const pb = byId.get(b);
     if (!pa || !pb) continue;
     g.lineBetween(pa.x, pa.y, pb.x, pb.y);
   }
-  g.lineStyle(3, 0xf4c430, 0.22);
-  for (const [a, b] of links) {
-    const pa = byId.get(a);
-    const pb = byId.get(b);
-    if (!pa || !pb) continue;
-    g.lineBetween(pa.x, pa.y, pb.x, pb.y);
-  }
+  void scene;
 }
 
 function drawCityBlocks(

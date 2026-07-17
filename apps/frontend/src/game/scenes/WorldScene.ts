@@ -41,6 +41,8 @@ export class WorldScene extends Phaser.Scene {
   private placePanel!: PlacePanel;
   private bearingArrow!: Phaser.GameObjects.Triangle;
   private hudHost!: HTMLElement;
+  private playerShadow!: Phaser.GameObjects.Image;
+  private facing: 'down' | 'up' | 'left' | 'right' = 'down';
 
   constructor() {
     super('World');
@@ -61,13 +63,15 @@ export class WorldScene extends Phaser.Scene {
     const sx = spawn.x;
     const sy = spawn.y + 40;
 
-    this.add.image(sx, sy + 28, 'shadow').setDepth(1);
-    this.player = this.physics.add.sprite(sx, sy, 'player');
+    this.playerShadow = this.add.image(sx, sy + 30, 'shadow').setDepth(9);
+    this.player = this.physics.add.sprite(sx, sy, 'player', 0);
     this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     body.setSize(28, 20);
     body.setOffset(10, 52);
+    this.player.play('idle-down');
+    this.addAmbientFx();
 
     this.physics.world.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
     this.cameras.main.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
@@ -178,13 +182,8 @@ export class WorldScene extends Phaser.Scene {
     }
 
     this.player.setVelocity(vx * SPEED, vy * SPEED);
-
-    // Soft bob when moving
-    if (len > 0.05) {
-      this.player.setScale(1, 1 + Math.sin(this.time.now / 90) * 0.02);
-    } else {
-      this.player.setScale(1);
-    }
+    this.playerShadow.setPosition(this.player.x, this.player.y + 30);
+    this.updatePlayerAnim(vx, vy, len);
 
     this.updateNearest();
     this.compass.update({
@@ -228,42 +227,104 @@ export class WorldScene extends Phaser.Scene {
 
   private spawnPois(): void {
     for (const poi of this.pois) {
-      const marker = this.add.image(poi.x, poi.y - 10, 'poi').setDepth(5);
+      const beacon = this.add.image(poi.x, poi.y - 8, 'poi').setDepth(5).setScale(0.9);
       this.tweens.add({
-        targets: marker,
-        y: poi.y - 18,
+        targets: beacon,
+        y: poi.y - 16,
         duration: 1400,
         yoyo: true,
         repeat: -1,
         ease: 'sine.inOut',
       });
 
-      // Title + what it's about (e.g. "La Rambla — Quién soy")
+      // Unique landmark icon per place
+      const iconKey = `icon-${poi.id}`;
+      if (this.textures.exists(iconKey)) {
+        const icon = this.add.image(poi.x, poi.y - 58, iconKey).setDepth(6).setScale(1.15);
+        this.tweens.add({
+          targets: icon,
+          y: poi.y - 64,
+          duration: 1600,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        });
+      }
+
+      // Pedestal
+      const totem = this.add.graphics().setDepth(4);
+      totem.fillStyle(poi.color, 0.88);
+      totem.fillRoundedRect(poi.x - 10, poi.y - 48, 20, 36, 5);
+      totem.fillStyle(0xf4c430, 0.9);
+      totem.fillCircle(poi.x, poi.y - 52, 6);
+
       const label = this.add
-        .text(poi.x, poi.y + 30, labelForPoi(poi), {
+        .text(poi.x, poi.y + 32, labelForPoi(poi), {
           fontFamily: 'DM Sans, system-ui',
           fontSize: '13px',
           fontStyle: '600',
           color: '#f7f2e9',
-          backgroundColor: 'rgba(11,18,32,0.78)',
+          backgroundColor: 'rgba(11,18,32,0.82)',
           padding: { x: 10, y: 6 },
           align: 'center',
         })
         .setOrigin(0.5, 0)
-        .setDepth(6);
-      // Soft shadow plate behind label for contrast on sand/water
+        .setDepth(7);
       const bounds = label.getBounds();
       this.add
-        .rectangle(bounds.centerX, bounds.centerY, bounds.width + 4, bounds.height + 4, 0x0b1220, 0.2)
-        .setDepth(5.5);
-
-      // Landmark totem
-      const totem = this.add.graphics().setDepth(4);
-      totem.fillStyle(poi.color, 0.9);
-      totem.fillRoundedRect(poi.x - 8, poi.y - 70, 16, 50, 4);
-      totem.fillStyle(0xf4c430, 0.95);
-      totem.fillCircle(poi.x, poi.y - 78, 10);
+        .rectangle(bounds.centerX, bounds.centerY, bounds.width + 6, bounds.height + 4, 0x0b1220, 0.25)
+        .setDepth(6.5);
     }
+  }
+
+  private updatePlayerAnim(vx: number, vy: number, len: number): void {
+    if (len > 0.08) {
+      if (Math.abs(vx) > Math.abs(vy)) {
+        this.facing = vx < 0 ? 'left' : 'right';
+      } else {
+        this.facing = vy < 0 ? 'up' : 'down';
+      }
+      const walk = `walk-${this.facing}`;
+      if (this.player.anims.currentAnim?.key !== walk) {
+        this.player.play(walk, true);
+      }
+    } else {
+      const idle = `idle-${this.facing}`;
+      if (this.player.anims.currentAnim?.key !== idle) {
+        this.player.play(idle, true);
+      }
+    }
+  }
+
+  private addAmbientFx(): void {
+    // Soft dust / pollen over campo-ish green
+    const dust = this.add.particles(0, 0, 'poi', {
+      x: { min: 0, max: WORLD_SIZE },
+      y: { min: 0, max: WORLD_SIZE * 0.55 },
+      scale: { start: 0.08, end: 0 },
+      alpha: { start: 0.25, end: 0 },
+      speedY: { min: -8, max: -20 },
+      speedX: { min: -10, max: 10 },
+      lifespan: 4000,
+      frequency: 200,
+      blendMode: 'ADD',
+      tint: 0xf4c430,
+    });
+    dust.setDepth(3);
+
+    // Sparkles on southern water
+    const spark = this.add.particles(0, 0, 'poi', {
+      x: { min: 0, max: WORLD_SIZE },
+      y: { min: WORLD_SIZE * 0.7, max: WORLD_SIZE },
+      scale: { start: 0.12, end: 0 },
+      alpha: { start: 0.35, end: 0 },
+      speed: { min: 4, max: 16 },
+      lifespan: 2500,
+      frequency: 280,
+      blendMode: 'ADD',
+      tint: 0x7eb6d9,
+    });
+    spark.setDepth(2);
   }
 
   private updateNearest(): void {
