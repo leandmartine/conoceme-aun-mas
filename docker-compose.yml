@@ -1,0 +1,32 @@
+# Local production-like stack (does not publish to the internet).
+# Usage:
+#   docker compose up --build
+#   open http://localhost:8787
+
+services:
+  web:
+    build: .
+    ports:
+      - "8787:8787"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8787
+      CONTENT_ROOT: /app/content
+      STATIC_ROOT: /app/apps/frontend/dist
+      # Same-origin SPA + API — CORS less critical; keep explicit for safety
+      CORS_ORIGIN: http://localhost:8787
+      PORTFOLIO_API_KEYS: ${PORTFOLIO_API_KEYS:-dev-local-key}
+      # XAI_API_KEY: ${XAI_API_KEY:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

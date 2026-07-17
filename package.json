@@ -13,7 +13,9 @@
     "dev:backend": "npm run dev -w @conoceme/backend",
     "build": "npm run build -w @conoceme/shared && npm run build -w @conoceme/backend && npm run build -w @conoceme/frontend",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "lint": "npm run typecheck"
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run typecheck",
+    "start": "npm run start -w @conoceme/backend"
   },
   "engines": {
     "node": ">=20"

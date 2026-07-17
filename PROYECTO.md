@@ -4,81 +4,44 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Layout costero compacto + caminos + distritos densos |
-| **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
-| **Art** | Híbrido moderno · top-down · minimapa brújula |
+| **Status** | 🟢 v1 experiencia completa en código — deploy real pendiente de OK |
+| **Stack** | FE: Vite·TS·Phaser 3·GSAP · BE: Hono·TS·REST · shared · content-driven |
+| **Art** | Híbrido moderno · top-down · minimapa brújula · personaje foto-inspired |
 | **Progression** | Todo desbloqueado desde el inicio |
 
 ---
 
 ## Current focus
 
-1. Merge mundo Phaser + brújula (esta PR).  
-2. Siguiente: art pass (Rambla/personaje) + paneles más ricos.
+1. Merge `chore/deploy-ci` (CI + Docker scaffold).  
+2. **Deploy público** solo cuando Leandro lo autorice (ver `docs/DEPLOY.md`).  
+3. Opcional: provider LLM SpaceXAI con `XAI_API_KEY`.
 
 ---
 
 ## Changelog
 
-### 2026-07-17 — World layout fix
+### 2026-07-17 — Deploy scaffold + CI
 
-- Mapa compacto (1600px): spawn cerca de todo.  
-- Puerto en bahía oeste y Faro en punta este (sobre agua).  
-- Caminos curvos tipo calle, no rectas.  
-- Distritos con más props (muelles, torres, plaza, campus, campo).
+- GitHub Actions: typecheck + unit tests (intent AI) + build.  
+- Dockerfile + docker-compose (SPA + API same-origin).  
+- Backend: secure headers, `STATIC_ROOT`, serve Vite dist in production.  
+- `docs/DEPLOY.md`.
 
-### 2026-07-17 — Content depth + visited progress
+### 2026-07-17 — AI companion stub
 
-- Textos más ricos en los 7 lugares (experiencia, proyectos, contacto…).  
-- Progress: lugares visitados en brújula + topbar; toast al completar el mapa.  
-- Anillo de interacción al acercarte a un POI.
+- `POST /api/v1/ai/chat` + API key + rate limit + knowledge base.  
+- FAB 💬 in-game companion (grounded stub).
 
-### 2026-07-17 — Polish panels + handoff
+### 2026-07-17 — Art: character + Rambla
 
-- Panel de lugar premium (acento por capítulo, meta “Lugar — tema”, links pill).  
-- Handoff cinematográfico shell ↔ juego.  
-- SFX procedural + mute; coach mark primera vez; topbar DOM.
+- Personaje inspirado en foto CV (sweater gris, walk cycle).  
+- Paseo costero: dunas, faroles, bancos, palmeras, espuma.
 
-### 2026-07-17 — Art: character + terrain textures
+### 2026-07-17 — Game + shell + monorepo
 
-- Personaje con sheet 4 dir + walk/idle (alto, café con leche, pelo negro).  
-- Texturas canvas: pasto, arena, agua, adoquín.  
-- Iconos por landmark; partículas ambiente; sombra que sigue al player.
-
-### 2026-07-17 — Uruguay map readability
-
-- Labels: `Lugar — de qué se trata` (ej. La Rambla — Quién soy).  
-- Mapa redibujado: río, rambla, ciudad, puerto, campo, faro, rutas.  
-- Sin grilla de “pixeles”; biomas anclados a los POIs.
-
-### 2026-07-17 — Game player + compass
-
-- Phaser 3 top-down world, lazy-loaded al entrar.  
-- Player (procedural), WASD/flechas + joystick touch.  
-- POIs desde API, interacción E / botón, place panel.  
-- Minimapa brújula con rumbo a lugares.
-
-### 2026-07-17 — Shell cinematic
-
-- GSAP + ScrollTrigger + Lenis en la intro.  
-- Stage full-viewport con silueta Uruguay, chapters, cards de lugares.  
-- CTA “Explorar el mapa” con scroll suave.
-
-### 2026-07-17 — Monorepo scaffold
-
-- npm workspaces: `apps/frontend`, `apps/backend`, `packages/shared`.  
-- Backend Hono con capas SOLID: health, profile, places, player state.  
-- Content leído desde `/content`.  
-- Frontend Vite: shell dark premium + client API tipado.  
-- CI: install + typecheck + build.
-
-### 2026-07-17 — Architecture & profile
-
-- Split FE/BE documentado; AI_GUIDE; world map; content base.
-
-### 2026-07-17 — Foundation
-
-- Visión inicial y repo público.
+- Phaser world, brújula, paneles, sprint, landing cinematográfica.  
+- Content profile/places; workspaces FE/BE/shared.
 
 ---
 
@@ -88,10 +51,10 @@
 |-------|--------|
 | Profile base | ✅ |
 | Places narrative | ✅ (ampliable) |
-| Timeline laboral fino | ⬜ fechas exactas |
-| ORT carrera exacta | ⬜ |
+| Knowledge IA | ✅ `content/knowledge/` |
+| Timeline laboral fino | ⬜ fechas exactas extra |
+| ORT detalle carrera | ⬜ |
 | Proyectos skyline extra | ⬜ |
-| Knowledge IA | ⬜ |
 
 ---
 
@@ -99,13 +62,8 @@
 
 | PR | State |
 |----|-------|
-| Foundation | ✅ |
-| docs: world map (#1) | ✅ |
-| docs: architecture + profile + AI (#2) | ✅ |
-| chore: monorepo scaffold (#3) | ✅ |
-| feat(shell): GSAP intro (#4) | ✅ |
-| feat(game): player + compass | 🔵 esta PR |
-| feat(ui): place panels | ⬜ |
-| feat(art): character + rambla | ⬜ |
-| feat(ai): stub + api key | ⬜ |
-| chore: deploy | ⬜ |
+| Foundation → monorepo → shell → game → panels | ✅ |
+| feat(art): character + Rambla | ✅ |
+| feat(ai): stub + api key | ✅ |
+| chore: deploy + CI | 🔵 esta PR |
+| Deploy live | ⬜ espera OK de Leandro |

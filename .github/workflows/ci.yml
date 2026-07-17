@@ -18,14 +18,19 @@ jobs:
           test -f docs/ARCHITECTURE.md
           test -f docs/AI_GUIDE.md
           test -f docs/WORLD_MAP.md
+          test -f docs/DEPLOY.md
           test -f PROYECTO.md
           test -f AGENTS.md
           test -f content/profile.json
           test -f content/places.index.json
-          echo "Foundation docs + content OK"
+          test -d content/knowledge
+          test -f content/knowledge/about.md
+          test -f Dockerfile
+          test -f docker-compose.yml
+          echo "Foundation docs + content + deploy scaffold OK"
 
-  typecheck:
-    name: Install, build, typecheck
+  typecheck-test-build:
+    name: Install, typecheck, test, build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,5 +42,7 @@ jobs:
         run: npm ci
       - name: Typecheck workspaces
         run: npm run typecheck
-      - name: Build
+      - name: Unit tests
+        run: npm test
+      - name: Build monorepo
         run: npm run build

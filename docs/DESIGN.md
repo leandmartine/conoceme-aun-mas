@@ -198,7 +198,7 @@ Completar con más detalle de LinkedIn cuando se quiera:
 - [ ] Fechas y bullets finos de cada rol  
 - [ ] Carrera exacta en ORT  
 - [ ] Lista de proyectos reales en skyline  
-- [ ] Knowledge base corta en `content/knowledge/` para la IA  
+- [x] Knowledge base corta en `content/knowledge/` para la IA  
 
 ---
 
@@ -207,24 +207,25 @@ Completar con más detalle de LinkedIn cuando se quiera:
 | # | Título | Scope |
 |---|--------|--------|
 | ✅ | Foundation docs | DESIGN inicial, reglas |
-| **esta** | Architecture + profile + AI guide + compass + README limpio | Docs + content |
-| next | `chore: monorepo scaffold FE/BE + shared` | workspaces, tsconfig, health |
-| | `feat(api): profile + places REST` | modules SOLID |
-| | `feat(shell): cinematic intro` | GSAP + Lenis |
-| | `feat(game): player + world + compass minimap` | Phaser |
-| | `feat(ui): place panels from API` | |
-| | `feat(art): character + Rambla pass` | |
-| | `feat(ai): chat stub + API key middleware` | AI_GUIDE |
-| | `chore: deploy + CI` | |
+| ✅ | Architecture + profile + AI guide + compass + README limpio | Docs + content |
+| ✅ | `chore: monorepo scaffold FE/BE + shared` | workspaces, tsconfig, health |
+| ✅ | `feat(api): profile + places REST` | modules SOLID |
+| ✅ | `feat(shell): cinematic intro` | GSAP + Lenis |
+| ✅ | `feat(game): player + world + compass minimap` | Phaser |
+| ✅ | `feat(ui): place panels from API` | |
+| ✅ | `feat(art): character + Rambla pass` | |
+| ✅ | `feat(ai): chat stub + API key middleware` | AI_GUIDE |
+| 🔵 | `chore: deploy + CI` | Docker + Actions + docs/DEPLOY |
+| ⬜ | Deploy live | solo con OK de Leandro |
 
 ---
 
 ## 12. Definition of done (v1 experiencia)
 
-- [ ] Intro premium mobile + desktop  
-- [ ] Movimiento top-down fluido  
-- [ ] Minimapa brújula usable  
-- [ ] ≥ lugares con content real vía API  
-- [ ] Backend health + profile + places  
-- [ ] Prep visible para API key + AI (aunque el provider llegue después)  
+- [x] Intro premium mobile + desktop  
+- [x] Movimiento top-down fluido  
+- [x] Minimapa brújula usable  
+- [x] ≥ lugares con content real vía API  
+- [x] Backend health + profile + places  
+- [x] Prep visible para API key + AI (aunque el provider llegue después)  
 - [ ] No se vea “template IA genérico”  
