@@ -1,4 +1,7 @@
 import type {
+  AiChatRequest,
+  AiChatResponse,
+  AiStatusDto,
   ApiErrorBody,
   HealthDto,
   PlaceDetailDto,
@@ -20,14 +23,29 @@ export class ApiClientError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+/** Portfolio AI key — only for local/demo companion; never put real secrets in VITE_*. */
+function portfolioApiKey(): string {
+  return (import.meta.env.VITE_PORTFOLIO_API_KEY as string | undefined)?.trim() || '';
+}
+
+async function request<T>(
+  path: string,
+  init?: RequestInit & { withApiKey?: boolean },
+): Promise<T> {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
+    ...(init?.headers as Record<string, string> | undefined),
+  };
+
+  if (init?.withApiKey) {
+    const key = portfolioApiKey();
+    if (key) headers['Authorization'] = `Bearer ${key}`;
+  }
+
   const res = await fetch(`${API_V1_PREFIX}${path}`, {
-    headers: {
-      Accept: 'application/json',
-      ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
-      ...init?.headers,
-    },
     ...init,
+    headers,
   });
 
   if (!res.ok) {
@@ -56,5 +74,12 @@ export const api = {
     request<PlayerStateDto>('/player/state', {
       method: 'PUT',
       body: JSON.stringify(state),
+    }),
+  aiStatus: () => request<AiStatusDto>('/ai/status'),
+  aiChat: (body: AiChatRequest) =>
+    request<AiChatResponse>('/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      withApiKey: true,
     }),
 };

@@ -7,7 +7,12 @@ const envSchema = z.object({
   HOST: z.string().default('0.0.0.0'),
   CONTENT_ROOT: z.string().optional(),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  /** Comma-separated keys for AI chat (Bearer / X-Api-Key). */
   PORTFOLIO_API_KEYS: z.string().optional(),
+  /** Optional SpaceXAI / xAI key for future LLM mode (server-only). */
+  XAI_API_KEY: z.string().optional(),
+  AI_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
+  AI_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
 });
 
 export type Env = z.infer<typeof envSchema> & {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import type { PlacesIndexDto } from '@conoceme/shared';
+import type { PlaceId, PlacesIndexDto } from '@conoceme/shared';
+import { CompanionPanel } from '../ui/companionPanel';
 import { PlacePanel } from '../ui/placePanel';
 import { BootScene } from './scenes/BootScene';
 import { WorldScene, type WorldSceneData } from './scenes/WorldScene';
@@ -19,6 +20,16 @@ export function createGame(options: {
   }
 
   const placePanel = new PlacePanel(options.hudHost);
+  const playerCtx: { zoneId: PlaceId | null; visitedPlaceIds: PlaceId[] } = {
+    zoneId: options.places.spawnPlaceId ?? 'rambla',
+    visitedPlaceIds: [],
+  };
+  const companion = new CompanionPanel(options.hudHost, {
+    getPlayer: () => ({
+      zoneId: playerCtx.zoneId,
+      visitedPlaceIds: [...playerCtx.visitedPlaceIds],
+    }),
+  });
   let destroyed = false;
   let gameRef: Phaser.Game;
 
@@ -26,6 +37,7 @@ export function createGame(options: {
     places: options.places,
     hudHost: options.hudHost,
     placePanel,
+    playerCtx,
     onExit: () => {
       // Single teardown path: destroy game, then notify host
       session.destroy();
@@ -95,6 +107,11 @@ export function createGame(options: {
       window.removeEventListener('resize', onResize);
       try {
         placePanel.destroy();
+      } catch {
+        /* ignore */
+      }
+      try {
+        companion.destroy();
       } catch {
         /* ignore */
       }

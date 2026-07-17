@@ -123,4 +123,44 @@ export interface ApiErrorBody {
   };
 }
 
+/** AI companion (POST /ai/chat) — see docs/AI_GUIDE.md */
+export type AiRefuseReason =
+  | 'OFF_TOPIC'
+  | 'JAILBREAK'
+  | 'CODE_REQUEST'
+  | 'EXFIL_PROMPT'
+  | 'FORMAT_ESCAPE'
+  | 'EMPTY'
+  | 'RATE_LIMIT'
+  | null;
+
+export interface AiChatPlayerContext {
+  zoneId?: PlaceId | null;
+  visitedPlaceIds?: PlaceId[];
+}
+
+export interface AiChatRequest {
+  message: string;
+  player?: AiChatPlayerContext;
+  locale?: 'es' | string;
+}
+
+export interface AiChatResponse {
+  reply: string;
+  meta: {
+    grounded: boolean;
+    refused: boolean;
+    reason: AiRefuseReason;
+    mode: 'stub' | 'llm';
+  };
+}
+
+export interface AiStatusDto {
+  ok: true;
+  enabled: boolean;
+  mode: 'stub' | 'llm' | 'disabled';
+  requiresApiKey: boolean;
+  modelConfigured: boolean;
+}
+
 export const API_V1_PREFIX = '/api/v1' as const;
