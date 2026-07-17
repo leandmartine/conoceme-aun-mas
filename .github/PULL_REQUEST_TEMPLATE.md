@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- Why this PR exists. 1–3 sentences. -->
+<!-- Por qué existe esta PR. 1–3 oraciones. -->
 
 ## Changes
 
@@ -8,27 +8,17 @@
 
 ## Design sync
 
-- [ ] No design change
-- [ ] Updated `docs/DESIGN.md`
-- [ ] Updated `PROYECTO.md` status/changelog
+- [ ] Sin cambio de diseño
+- [ ] Actualicé `docs/DESIGN.md` / `ARCHITECTURE.md` / `AI_GUIDE.md` / `WORLD_MAP.md`
+- [ ] Actualicé `PROYECTO.md`
 
 ## How to test
 
 1. 
 2. 
 
-## Visual QA (if UI/game)
-
-- [ ] Desktop
-- [ ] Mobile / narrow viewport
-- [ ] Reduced motion (if applicable)
-
-## Screenshots / video
-
-<!-- Optional but preferred for shell & game -->
-
 ## Checklist
 
-- [ ] Single clear intention
-- [ ] No secrets
-- [ ] Lint / types clean (when tooling exists)
+- [ ] Una sola intención clara
+- [ ] FE/BE / content respetan la arquitectura
+- [ ] Sin secretos

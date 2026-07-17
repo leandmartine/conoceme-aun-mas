@@ -1,0 +1,62 @@
+{
+  "allUnlockedFromStart": true,
+  "spawnPlaceId": "rambla",
+  "places": [
+    {
+      "id": "rambla",
+      "title": "La Rambla",
+      "chapter": "about",
+      "subtitle": "Quién soy",
+      "map": { "x": 0, "y": 120 },
+      "compassLabel": "About"
+    },
+    {
+      "id": "ciudad-vieja",
+      "title": "Ciudad Vieja",
+      "chapter": "experience",
+      "subtitle": "Experiencia",
+      "map": { "x": -80, "y": 40 },
+      "compassLabel": "XP"
+    },
+    {
+      "id": "skyline",
+      "title": "Skyline",
+      "chapter": "projects",
+      "subtitle": "Proyectos",
+      "map": { "x": 90, "y": 10 },
+      "compassLabel": "Build"
+    },
+    {
+      "id": "universidad",
+      "title": "Universidad",
+      "chapter": "education",
+      "subtitle": "Estudios",
+      "map": { "x": 70, "y": -70 },
+      "compassLabel": "Edu"
+    },
+    {
+      "id": "puerto",
+      "title": "Puerto",
+      "chapter": "github",
+      "subtitle": "Código & GitHub",
+      "map": { "x": -100, "y": 0 },
+      "compassLabel": "Code"
+    },
+    {
+      "id": "campo",
+      "title": "Campo",
+      "chapter": "values",
+      "subtitle": "Valores",
+      "map": { "x": -40, "y": -80 },
+      "compassLabel": "Values"
+    },
+    {
+      "id": "faro",
+      "title": "El Faro",
+      "chapter": "contact",
+      "subtitle": "Contacto",
+      "map": { "x": 110, "y": 50 },
+      "compassLabel": "Hi"
+    }
+  ]
+}
