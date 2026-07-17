@@ -3,7 +3,10 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: #0b1220;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  background: #4f7a58;
 }
 
 .game-loading {
