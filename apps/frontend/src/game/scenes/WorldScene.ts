@@ -186,6 +186,18 @@ export class WorldScene extends Phaser.Scene {
     this.progressLabel = bar.querySelector('[data-progress]');
     this.refreshProgressUi();
 
+    // Fixed development warning (always visible while in-game)
+    const devBanner = document.createElement('div');
+    devBanner.className = 'game-dev-banner';
+    devBanner.setAttribute('role', 'status');
+    devBanner.innerHTML = `
+      <span class="game-dev-banner__icon" aria-hidden="true">⚠</span>
+      <p class="game-dev-banner__text">
+        <strong>En desarrollo.</strong> Esta experiencia se encuentra en construcción y puede cambiar.
+      </p>
+    `;
+    this.hudHost.append(devBanner);
+
     bar.querySelector('[data-exit]')?.addEventListener('click', () => {
       void data.onExit?.();
     });
