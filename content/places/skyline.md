@@ -1,7 +1,12 @@
-# Skyline — Proyectos
+# Skyline
 
-Acá van los proyectos que merecen pantalla completa: casos, repos y demos.
+El skyline es el capítulo de **proyectos**: lo que construyo o estoy construyendo.
 
-Por ahora el skyline está en obra (placeholders). Cuando subamos proyectos, cada uno puede ser un edificio más del horizonte.
+## En el horizonte
+- **conoceme-aun-mas** — este portfolio-juego (Vite, Phaser, API REST, shell cinematográfica). Es el edificio más visible del mapa: código público para quien quiera chusmear.
+- Proyectos de práctica con **C# / ASP.NET MVC / SQL** y web, enfocados en lógica de negocio + datos.
 
-Stack que vengo trabajando / aprendiendo: **C#**, **ASP.NET MVC**, **SQL**, datos y web.
+## Cómo pienso los builds
+Prefiero algo **jugable y honesto** a un wall of text. Cada proyecto debería poder contarse como un lugar en el mapa.
+
+¿Tenés un repo o case study para sumar al skyline? Escribime desde el Faro.

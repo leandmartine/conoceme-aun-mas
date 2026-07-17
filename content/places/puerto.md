@@ -1,6 +1,12 @@
-# Puerto — GitHub
+# Puerto
 
-El puerto es el punto de carga de código y colaboración.
+El puerto es donde se carga y descarga **código**.
 
-- **GitHub:** [github.com/leandmartine](https://github.com/leandmartine)  
-- Este mismo portfolio: repo público `conoceme-aun-mas` para quien quiera chusmear cómo está hecho.
+## Muelles abiertos
+- [github.com/leandmartine](https://github.com/leandmartine) — repos y experimentos  
+- **conoceme-aun-mas** — este portfolio público: monorepo frontend (Vite + Phaser) + backend REST (Hono), content en markdown  
+
+## Cómo laburo el código
+Me importa que el repo se entienda: PRs claras, arquitectura legible (FE/BE separados, SOLID en la API) y que alguien pueda clonar y correr en local sin magia oscura.
+
+Si querés ver cómo está armado este mundo, el muelle está abierto.

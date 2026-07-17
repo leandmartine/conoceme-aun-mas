@@ -12,6 +12,7 @@ import {
 import { drawUruguayMap } from '../world/drawUruguayMap';
 import { gameAudio } from '../../audio/gameAudio';
 import type { PlacePanel } from '../../ui/placePanel';
+import { loadVisited, markVisited } from '../systems/progressStore';
 
 export interface WorldSceneData {
   places: PlacesIndexDto;
@@ -44,6 +45,10 @@ export class WorldScene extends Phaser.Scene {
   private hudHost!: HTMLElement;
   private playerShadow!: Phaser.GameObjects.Image;
   private facing: 'down' | 'up' | 'left' | 'right' = 'down';
+  private visited = new Set<PlaceId>();
+  private progressLabel!: HTMLElement | null;
+  private nearRing!: Phaser.GameObjects.Arc;
+  private completionShown = false;
 
   constructor() {
     super('World');
@@ -90,13 +95,20 @@ export class WorldScene extends Phaser.Scene {
     this.interactKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
     this.joystick = new VirtualJoystick(this);
+    this.visited = loadVisited();
 
     this.compass = new CompassHud(this.hudHost);
-    this.compass.setPois(this.pois);
+    this.compass.setPois(this.pois, this.visited);
     this.compass.setFocusHandler((id) => {
       this.focusedId = id;
       gameAudio.tick();
     });
+
+    this.nearRing = this.add
+      .circle(0, 0, INTERACT_RADIUS, 0xf4c430, 0.08)
+      .setStrokeStyle(2, 0xf4c430, 0.45)
+      .setDepth(4)
+      .setVisible(false);
 
     this.prompt = this.add
       .text(0, 0, '', {
@@ -145,11 +157,14 @@ export class WorldScene extends Phaser.Scene {
     bar.innerHTML = `
       <button type="button" class="game-topbar__btn" data-exit>← Salir</button>
       <p class="game-topbar__hint">WASD / flechas · E interactuar · brújula abajo-derecha</p>
+      <p class="game-topbar__progress" data-progress></p>
       <button type="button" class="game-topbar__btn game-topbar__btn--mute" data-mute aria-label="Silenciar">
         ${gameAudio.isMuted() ? '🔇' : '🔊'}
       </button>
     `;
     this.hudHost.append(bar);
+    this.progressLabel = bar.querySelector('[data-progress]');
+    this.refreshProgressUi();
 
     bar.querySelector('[data-exit]')?.addEventListener('click', () => {
       void data.onExit?.();
@@ -219,6 +234,7 @@ export class WorldScene extends Phaser.Scene {
       playerY: this.player.y,
       pois: this.pois,
       focusedId: this.focusedId,
+      visited: this.visited,
     });
 
     if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
@@ -369,9 +385,14 @@ export class WorldScene extends Phaser.Scene {
     if (best) {
       this.prompt.setVisible(true);
       this.prompt.setPosition(this.player.x, this.player.y - 70);
-      this.prompt.setText(`E · ${labelForPoi(best)}`);
+      const seen = this.visited.has(best.id) ? ' · visto' : '';
+      this.prompt.setText(`E · ${labelForPoi(best)}${seen}`);
+      this.nearRing.setVisible(true);
+      this.nearRing.setPosition(best.x, best.y);
+      this.nearRing.setScale(1 + Math.sin(this.time.now / 200) * 0.04);
     } else {
       this.prompt.setVisible(false);
+      this.nearRing.setVisible(false);
     }
   }
 
@@ -381,8 +402,49 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (this.nearest) {
+      const id = this.nearest.id;
+      const wasNew = !this.visited.has(id);
       gameAudio.discover();
-      void this.placePanel.showPlace(this.nearest.id);
+      this.visited = markVisited(id);
+      this.compass.setVisited(this.visited);
+      this.refreshProgressUi();
+      void this.placePanel.showPlace(id);
+      if (wasNew) this.maybeCelebrateCompletion();
     }
+  }
+
+  private refreshProgressUi(): void {
+    if (!this.progressLabel) return;
+    const n = this.visited.size;
+    const t = this.pois.length;
+    this.progressLabel.textContent = `${n}/${t} lugares`;
+    if (n >= t && t > 0) {
+      this.progressLabel.classList.add('game-topbar__progress--done');
+      this.progressLabel.textContent = `✓ ${t}/${t} completo`;
+    }
+  }
+
+  private maybeCelebrateCompletion(): void {
+    if (this.completionShown) return;
+    if (this.visited.size < this.pois.length) return;
+    this.completionShown = true;
+    try {
+      if (localStorage.getItem('conoceme-complete-toast') === '1') return;
+      localStorage.setItem('conoceme-complete-toast', '1');
+    } catch {
+      /* show anyway */
+    }
+    const toast = document.createElement('div');
+    toast.className = 'game-toast';
+    toast.innerHTML = `
+      <p><strong>Mapa completo.</strong> Recorriste los ${this.pois.length} capítulos de Uruguay.</p>
+      <p class="game-toast__sub">El Faro sigue prendido si querés escribirme.</p>
+    `;
+    this.hudHost.append(toast);
+    window.setTimeout(() => toast.classList.add('game-toast--show'), 30);
+    window.setTimeout(() => {
+      toast.classList.remove('game-toast--show');
+      window.setTimeout(() => toast.remove(), 400);
+    }, 5200);
   }
 }

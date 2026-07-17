@@ -1,7 +1,13 @@
-# El Faro — Contacto
+# El Faro
 
-Si llegaste hasta acá, mandá señal ✨
+Si llegaste hasta acá, mandá señal.
 
-- **Email:** leandromartinez38@gmail.com  
-- **LinkedIn:** https://www.linkedin.com/in/leandmartine/  
-- **GitHub:** https://github.com/leandmartine  
+## Contacto
+- **Email:** [leandromartinez38@gmail.com](mailto:leandromartinez38@gmail.com)  
+- **LinkedIn:** [leandmartine](https://www.linkedin.com/in/leandmartine/)  
+- **GitHub:** [leandmartine](https://github.com/leandmartine)  
+
+## Para qué escribirme
+Oportunidades de laburo junior / trainee en software, feedback del portfolio-juego, o simplemente un “vi el faro”.
+
+Montevideo, Uruguay — siempre con ganas de construir.
