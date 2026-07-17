@@ -1,7 +1,7 @@
 import type { PlacesIndexDto, ProfileDto } from '@conoceme/shared';
 import { el, link } from './dom';
+import { mountLoopCanvas } from './loopCanvas';
 import { bindShellMotion, type MotionHandle } from './motion';
-import { uruguayBackdropSvg } from './uruguaySilhouette';
 
 export interface ShellModel {
   profile: ProfileDto | null;
@@ -12,24 +12,49 @@ export interface ShellModel {
 }
 
 let motion: MotionHandle | null = null;
+let stopCanvas: (() => void) | null = null;
+
+const REELS = [
+  {
+    id: 'walk',
+    title: 'Caminá Uruguay',
+    body: 'Top-down real: Rambla, ciudad, puerto y faro en un solo mapa.',
+    loopClass: 'reel--walk',
+  },
+  {
+    id: 'compass',
+    title: 'Brújula viva',
+    body: 'Marcá rumbo a experiencia, estudios, GitHub o contacto.',
+    loopClass: 'reel--compass',
+  },
+  {
+    id: 'chapters',
+    title: 'Capítulos del portfolio',
+    body: 'Cada lugar es un capítulo. Todo desbloqueado desde el inicio.',
+    loopClass: 'reel--chapters',
+  },
+] as const;
 
 export function createShell(root: HTMLElement, model: ShellModel): void {
   motion?.destroy();
   motion = null;
+  stopCanvas?.();
+  stopCanvas = null;
   root.replaceChildren();
 
   const shell = el('div', { className: 'shell' });
   const grain = el('div', { className: 'shell__grain', ariaHidden: 'true' });
 
-  // ——— STAGE / INTRO ———
+  // ——— HERO STAGE ———
   const stage = el('section', { className: 'shell__stage' });
   const stageBg = el('div', { className: 'shell__stage-bg', ariaHidden: 'true' });
-  stageBg.innerHTML = uruguayBackdropSvg();
+  const stageGlow = el('div', { className: 'shell__stage-glow', ariaHidden: 'true' });
+  const stageOrb = el('div', { className: 'shell__stage-orb', ariaHidden: 'true' });
 
   const hero = el('div', { className: 'shell__hero' });
   const kicker = el('p', {
     className: 'shell__kicker',
-    text: 'Montevideo · Uruguay',
+    text: 'Montevideo · Uruguay · Portfolio jugable',
   });
   kicker.setAttribute('data-hero-line', '');
 
@@ -46,25 +71,14 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   });
   subtitle.setAttribute('data-hero-line', '');
 
-  const status = el('p', {
-    className: model.apiOk
-      ? 'shell__status shell__status--ok'
-      : 'shell__status shell__status--err',
-    text: model.error
-      ? `API: ${model.error}`
-      : model.apiOk
-        ? 'Mundo online · datos desde la API'
-        : 'API offline',
-  });
-  status.setAttribute('data-hero-line', '');
-
   const ctaRow = el('div', { className: 'shell__cta-row' });
   const ctaPlay = el('button', {
     className: 'shell__cta',
     type: 'button',
     text: 'Entrar al mundo',
   }) as HTMLButtonElement;
-  ctaPlay.disabled = !model.places || !model.onEnterWorld;
+  const canEnter = Boolean(model.apiOk && model.places && model.onEnterWorld);
+  ctaPlay.disabled = !canEnter;
   ctaPlay.addEventListener('click', () => model.onEnterWorld?.());
 
   const ctaMap = el('button', {
@@ -77,15 +91,94 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   });
   ctaRow.append(ctaPlay, ctaMap);
 
+  // API status BELOW buttons only
+  const apiStatus = el('p', {
+    className: model.apiOk
+      ? 'shell__api-status shell__api-status--ok'
+      : 'shell__api-status shell__api-status--err',
+  });
+  apiStatus.innerHTML = model.apiOk
+    ? '<span class="shell__api-dot" aria-hidden="true"></span> Online — mundo listo'
+    : `<span class="shell__api-dot" aria-hidden="true"></span> Offline — ${model.error ? escapeHtml(model.error) : 'sin conexión a la API'}`;
+
   const scrollHint = el('p', {
     className: 'shell__scroll-hint',
-    text: 'O scrolleá la historia',
+    text: 'Scroll · la historia se mueve con vos',
   });
 
-  hero.append(kicker, title, subtitle, status, ctaRow, scrollHint);
-  stage.append(stageBg, hero);
+  hero.append(kicker, title, subtitle, ctaRow, apiStatus, scrollHint);
+  stage.append(stageBg, stageGlow, stageOrb, hero);
 
-  // ——— CHAPTER: mood ———
+  // ——— LOOP REELS (interactive “videos”) ———
+  const reels = el('section', { className: 'shell__reels', id: 'reels' });
+  reels.setAttribute('data-chapter', '');
+  reels.append(
+    el('p', { className: 'shell__eyebrow', text: 'Loops en vivo' }),
+    el('h2', {
+      className: 'shell__chapter-title',
+      text: 'No es un scroll muerto',
+    }),
+  );
+  reels.querySelectorAll('p, h2').forEach((n) => n.setAttribute('data-reveal', ''));
+
+  const reelsGrid = el('div', { className: 'shell__reels-grid' });
+  for (const reel of REELS) {
+    const card = el('article', { className: `shell__reel ${reel.loopClass}` });
+    card.setAttribute('data-card', '');
+    card.tabIndex = 0;
+
+    const screen = el('div', { className: 'shell__reel-screen', ariaHidden: 'true' });
+    // looping fake UI layers
+    screen.innerHTML = `
+      <div class="shell__reel-loop">
+        <div class="shell__reel-layer shell__reel-layer--a"></div>
+        <div class="shell__reel-layer shell__reel-layer--b"></div>
+        <div class="shell__reel-layer shell__reel-layer--c"></div>
+        <div class="shell__reel-scan"></div>
+      </div>
+      <span class="shell__reel-badge">LOOP</span>
+    `;
+
+    const copy = el('div', { className: 'shell__reel-copy' });
+    copy.append(
+      el('h3', { className: 'shell__reel-title', text: reel.title }),
+      el('p', { className: 'shell__reel-body', text: reel.body }),
+    );
+
+    // Interactive: tilt on hover
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      card.style.setProperty('--rx', `${(-py * 8).toFixed(2)}deg`);
+      card.style.setProperty('--ry', `${(px * 10).toFixed(2)}deg`);
+      card.style.setProperty('--gx', `${(px + 0.5) * 100}%`);
+      card.style.setProperty('--gy', `${(py + 0.5) * 100}%`);
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    });
+
+    card.append(screen, copy);
+    reelsGrid.append(card);
+  }
+  reels.append(reelsGrid);
+
+  // ——— Marquee of places ———
+  const marquee = el('section', { className: 'shell__marquee-wrap', ariaHidden: 'true' });
+  const track = el('div', { className: 'shell__marquee' });
+  const labels =
+    model.places?.places.map((p) => `${p.title} — ${p.subtitle ?? p.chapter}`) ??
+    ['La Rambla — Quién soy', 'Ciudad Vieja — Experiencia', 'Puerto — GitHub', 'Faro — Contacto'];
+  const doubled = [...labels, ...labels, ...labels];
+  for (const text of doubled) {
+    const item = el('span', { className: 'shell__marquee-item', text });
+    track.append(item);
+  }
+  marquee.append(track);
+
+  // ——— Mood chapter ———
   const mood = el('section', { className: 'shell__chapter shell__chapter--mood' });
   mood.setAttribute('data-chapter', '');
   mood.append(
@@ -104,7 +197,7 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   );
   mood.querySelectorAll('p, h2').forEach((n) => n.setAttribute('data-reveal', ''));
 
-  // ——— CHAPTER: places map ———
+  // ——— Places ———
   const mapChapter = el('section', {
     className: 'shell__chapter shell__chapter--map',
     id: 'mapa',
@@ -129,7 +222,7 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
           text: place.subtitle ?? place.chapter,
         }),
       );
-      if (model.onEnterWorld) {
+      if (canEnter) {
         card.classList.add('shell__place-card--playable');
         card.addEventListener('click', () => model.onEnterWorld?.());
         card.title = 'Entrar al mundo';
@@ -144,13 +237,13 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   if (model.places?.allUnlockedFromStart) {
     const hint = el('p', {
       className: 'shell__hint',
-      text: 'Sin candados: la brújula del juego te va a mostrar la dirección; el recorrido lo elegís vos.',
+      text: 'Sin candados: la brújula te orienta; el recorrido lo elegís vos.',
     });
     hint.setAttribute('data-reveal', '');
     mapChapter.append(hint);
   }
 
-  // ——— ABOUT ———
+  // ——— About ———
   const about = el('section', { className: 'shell__chapter shell__chapter--about' });
   about.setAttribute('data-chapter', '');
   about.append(
@@ -173,8 +266,7 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     const skills = el('ul', { className: 'shell__skills' });
     skills.setAttribute('data-reveal', '');
     for (const skill of model.profile.skills) {
-      const li = el('li', { className: 'shell__skill', text: skill });
-      skills.append(li);
+      skills.append(el('li', { className: 'shell__skill', text: skill }));
     }
     about.append(skills);
 
@@ -187,7 +279,7 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     about.append(row);
   }
 
-  // ——— FOOTER CTA ———
+  // ——— Finale ———
   const finale = el('section', { className: 'shell__finale' });
   finale.setAttribute('data-chapter', '');
   const finaleTitle = el('h2', {
@@ -205,16 +297,34 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     type: 'button',
     text: 'Entrar al mundo',
   }) as HTMLButtonElement;
-  finaleCta.disabled = !model.places || !model.onEnterWorld;
+  finaleCta.disabled = !canEnter;
   finaleCta.setAttribute('data-reveal', '');
   finaleCta.addEventListener('click', () => model.onEnterWorld?.());
-  finale.append(finaleTitle, finaleBody, finaleCta);
 
-  shell.append(grain, stage, mood, mapChapter, about, finale);
+  const finaleStatus = el('p', {
+    className: model.apiOk
+      ? 'shell__api-status shell__api-status--ok shell__api-status--center'
+      : 'shell__api-status shell__api-status--err shell__api-status--center',
+  });
+  finaleStatus.innerHTML = model.apiOk
+    ? '<span class="shell__api-dot" aria-hidden="true"></span> Online'
+    : '<span class="shell__api-dot" aria-hidden="true"></span> Offline';
+
+  finale.append(finaleTitle, finaleBody, finaleCta, finaleStatus);
+
+  shell.append(grain, stage, reels, marquee, mood, mapChapter, about, finale);
   root.append(shell);
 
-  // Bind motion after paint
   requestAnimationFrame(() => {
+    stopCanvas = mountLoopCanvas(stageBg);
     motion = bindShellMotion(shell);
   });
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }

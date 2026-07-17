@@ -37,22 +37,59 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
-.shell__skyline {
+.shell__loop-canvas {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   width: 100%;
-  height: min(48vh, 420px);
+  height: 100%;
+  display: block;
+}
+
+.shell__stage-glow {
+  position: absolute;
+  width: min(70vw, 520px);
+  height: min(70vw, 520px);
+  right: -8%;
+  top: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 122, 95, 0.28), transparent 68%);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.75;
+}
+
+.shell__stage-orb {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  left: 12%;
+  top: 22%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(244, 196, 48, 0.55), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(126, 182, 217, 0.35), transparent 60%);
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
 }
 
 .shell__hero {
   position: relative;
   z-index: 1;
   max-width: 40rem;
+  pointer-events: none;
+}
+
+.shell__hero .shell__cta,
+.shell__hero .shell__cta-row,
+.shell__hero a,
+.shell__hero button {
+  pointer-events: auto;
 }
 
 .shell__kicker {
@@ -90,24 +127,62 @@
   line-height: 1.45;
 }
 
-.shell__status {
-  margin: 0.85rem 0 0;
-  font-size: 0.82rem;
-}
-
-.shell__status--ok {
-  color: #8fd6a8;
-}
-
-.shell__status--err {
-  color: #ffb4a8;
-}
-
 .shell__cta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.75rem;
+}
+
+/* API status under CTAs only */
+.shell__api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.shell__api-status--center {
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.shell__api-status--ok {
+  color: #8fd6a8;
+}
+
+.shell__api-status--err {
+  color: #ffb4a8;
+}
+
+.shell__api-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+  animation: shell-pulse-dot 1.8s ease-out infinite;
+}
+
+.shell__api-status--err .shell__api-dot {
+  animation: none;
+  opacity: 0.7;
+}
+
+@keyframes shell-pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(143, 214, 168, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(143, 214, 168, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(143, 214, 168, 0);
+  }
 }
 
 .shell__cta {
@@ -324,6 +399,307 @@
   margin-right: auto;
 }
 
+/* ——— Interactive loop reels ——— */
+.shell__reels {
+  position: relative;
+  z-index: 1;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vh, 5.5rem) clamp(1.25rem, 4vw, 3.5rem);
+  border-top: 1px solid rgba(247, 242, 233, 0.06);
+}
+
+.shell__reels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.75rem;
+  perspective: 900px;
+}
+
+.shell__reel {
+  --rx: 0deg;
+  --ry: 0deg;
+  --gx: 50%;
+  --gy: 40%;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(247, 242, 233, 0.12);
+  background: rgba(11, 18, 32, 0.55);
+  overflow: hidden;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease, border-color 0.25s ease;
+  cursor: default;
+}
+
+.shell__reel:hover,
+.shell__reel:focus-visible {
+  border-color: rgba(224, 122, 95, 0.45);
+  outline: none;
+}
+
+.shell__reel-screen {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: #0b1220;
+}
+
+.shell__reel-loop {
+  position: absolute;
+  inset: 0;
+}
+
+.shell__reel-layer {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.9;
+}
+
+.shell__reel-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(247, 242, 233, 0.06) 50%,
+    transparent 100%
+  );
+  background-size: 100% 220%;
+  animation: shell-scan 3.2s linear infinite;
+  pointer-events: none;
+}
+
+.shell__reel-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  padding: 0.28rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(11, 18, 32, 0.7);
+  border: 1px solid rgba(247, 242, 233, 0.15);
+  color: rgba(247, 242, 233, 0.75);
+}
+
+/* Walk loop */
+.reel--walk .shell__reel-layer--a {
+  background:
+    radial-gradient(circle at var(--gx) var(--gy), rgba(224, 122, 95, 0.35), transparent 45%),
+    linear-gradient(180deg, #143352, #1b4f72 60%, #0f3550);
+  animation: shell-pan 8s ease-in-out infinite alternate;
+}
+.reel--walk .shell__reel-layer--b {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 18px,
+    rgba(247, 242, 233, 0.06) 18px 20px
+  );
+  animation: shell-slide 6s linear infinite;
+  opacity: 0.5;
+}
+.reel--walk .shell__reel-layer--c {
+  background: radial-gradient(circle at 50% 70%, rgba(244, 196, 48, 0.35), transparent 28%);
+  animation: shell-bob 2.4s ease-in-out infinite;
+}
+
+/* Compass loop */
+.reel--compass .shell__reel-layer--a {
+  background: radial-gradient(circle at 50% 50%, #1b4f72, #0b1220 70%);
+}
+.reel--compass .shell__reel-layer--b {
+  inset: 18%;
+  border-radius: 50%;
+  border: 2px solid rgba(244, 196, 48, 0.45);
+  background:
+    conic-gradient(from 0deg, rgba(224, 122, 95, 0.8), transparent 40%, rgba(126, 182, 217, 0.5), transparent 75%);
+  animation: shell-spin 7s linear infinite;
+  opacity: 0.85;
+}
+.reel--compass .shell__reel-layer--c {
+  inset: 42%;
+  border-radius: 50%;
+  background: #e07a5f;
+  box-shadow: 0 0 0 6px rgba(224, 122, 95, 0.2);
+  animation: shell-pulse 2s ease-out infinite;
+}
+
+/* Chapters loop */
+.reel--chapters .shell__reel-layer--a {
+  background: linear-gradient(135deg, #0b1220, #1b4f72);
+}
+.reel--chapters .shell__reel-layer--b {
+  background:
+    linear-gradient(90deg, transparent, rgba(247, 242, 233, 0.08), transparent);
+  animation: shell-shimmer 2.8s ease-in-out infinite;
+}
+.reel--chapters .shell__reel-layer--c::before,
+.reel--chapters .shell__reel-layer--c::after {
+  content: '';
+  position: absolute;
+  width: 38%;
+  height: 22%;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(126, 182, 217, 0.35);
+  background: rgba(126, 182, 217, 0.1);
+}
+.reel--chapters .shell__reel-layer--c::before {
+  left: 12%;
+  top: 28%;
+  animation: shell-card-a 3.5s ease-in-out infinite;
+}
+.reel--chapters .shell__reel-layer--c::after {
+  right: 12%;
+  bottom: 22%;
+  animation: shell-card-b 3.5s ease-in-out infinite;
+}
+
+.shell__reel-copy {
+  padding: 1rem 1.05rem 1.15rem;
+}
+
+.shell__reel-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.shell__reel-body {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(247, 242, 233, 0.62);
+}
+
+/* Marquee */
+.shell__marquee-wrap {
+  overflow: hidden;
+  border-block: 1px solid rgba(247, 242, 233, 0.08);
+  background: rgba(11, 18, 32, 0.55);
+  padding: 0.85rem 0;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.shell__marquee {
+  display: flex;
+  width: max-content;
+  gap: 2rem;
+  animation: shell-marquee 32s linear infinite;
+}
+
+.shell__marquee-item {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.45);
+  white-space: nowrap;
+}
+
+.shell__marquee-item::before {
+  content: '◆';
+  margin-right: 0.75rem;
+  color: rgba(224, 122, 95, 0.55);
+  font-size: 0.55rem;
+}
+
+@keyframes shell-scan {
+  0% {
+    background-position: 0 -100%;
+  }
+  100% {
+    background-position: 0 200%;
+  }
+}
+@keyframes shell-pan {
+  0% {
+    transform: scale(1.05) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-3%, 2%);
+  }
+}
+@keyframes shell-slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-40px);
+  }
+}
+@keyframes shell-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes shell-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shell-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+}
+@keyframes shell-shimmer {
+  0%,
+  100% {
+    transform: translateX(-30%);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(30%);
+    opacity: 0.8;
+  }
+}
+@keyframes shell-card-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes shell-card-b {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+@keyframes shell-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+@media (max-width: 900px) {
+  .shell__reels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .shell__places-grid {
     grid-template-columns: 1fr 1fr;
@@ -333,5 +709,11 @@
 @media (prefers-reduced-motion: reduce) {
   .shell__cta {
     transition: none;
+  }
+  .shell__marquee,
+  .shell__reel-layer,
+  .shell__reel-scan,
+  .shell__api-dot {
+    animation: none !important;
   }
 }
