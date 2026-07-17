@@ -8,6 +8,6 @@ Si llegaste hasta acá, mandá señal.
 - **GitHub:** [leandmartine](https://github.com/leandmartine)  
 
 ## Para qué escribirme
-Oportunidades de laburo junior / trainee en software, feedback del portfolio-juego, o simplemente un “vi el faro”.
+Oportunidades de laburo junior o trainee en software, feedback del portfolio-juego, o simplemente un “vi el faro”.
 
 Montevideo, Uruguay — siempre con ganas de construir.

@@ -89,12 +89,12 @@
 /* Action buttons (sprint + interact) */
 .game-actions {
   position: absolute;
-  right: max(0.85rem, env(safe-area-inset-right));
+  left: max(0.85rem, env(safe-area-inset-left));
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  align-items: flex-end;
+  align-items: flex-start;
   z-index: 120;
   pointer-events: none;
 }
@@ -253,10 +253,15 @@ body.mode-game #app {
   user-select: none;
 }
 
-.compass__disc {
+.compass__dial {
   position: relative;
   width: 132px;
   height: 132px;
+}
+
+.compass__disc {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(27, 79, 114, 0.45), rgba(11, 18, 32, 0.92) 70%),
@@ -267,13 +272,15 @@ body.mode-game #app {
     inset 0 0 24px rgba(126, 182, 217, 0.12);
 }
 
+/* Ring sits on the same box as the disc — no offset */
 .compass__ring {
   position: absolute;
-  width: 132px;
-  height: 132px;
+  inset: 0;
   border-radius: 50%;
-  border: 1px dashed rgba(244, 196, 48, 0.25);
+  border: 1px dashed rgba(244, 196, 48, 0.35);
   pointer-events: none;
+  z-index: 1;
+  box-sizing: border-box;
 }
 
 .compass__n {
@@ -339,7 +346,7 @@ body.mode-game #app {
   transform-origin: 50% 100%;
   opacity: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 3;
   filter: drop-shadow(0 0 4px rgba(224, 122, 95, 0.5));
 }
 
@@ -659,8 +666,7 @@ body.mode-game #app {
     width: 128px;
   }
 
-  .compass__disc,
-  .compass__ring {
+  .compass__dial {
     width: 112px;
     height: 112px;
   }
