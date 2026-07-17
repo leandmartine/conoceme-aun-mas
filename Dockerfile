@@ -1,21 +1,16 @@
-# conoceme-aun-mas — single container: API + SPA (Railway-friendly)
-# Railway injects $PORT at runtime; HOST stays 0.0.0.0
+# conoceme-aun-mas — single container: API + SPA
+# Build on GitHub Actions → pull on ZimaOS/NAS
 
-FROM node:22-bookworm-slim AS deps
+FROM node:22-bookworm-slim AS build
 WORKDIR /app
-COPY package.json package-lock.json ./
-COPY apps/backend/package.json apps/backend/
-COPY apps/frontend/package.json apps/frontend/
-COPY packages/shared/package.json packages/shared/
-RUN npm ci
 
-FROM deps AS build
-WORKDIR /app
-COPY . .
-# Optional: bake local VITE key (prefer PUBLIC_COMPANION_KEY at runtime in prod)
-ARG VITE_PORTFOLIO_API_KEY=
-ENV VITE_PORTFOLIO_API_KEY=$VITE_PORTFOLIO_API_KEY
-RUN npm run build
+# Full monorepo context (prepare script needs shared sources + tsconfig)
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY apps ./apps
+COPY packages ./packages
+COPY content ./content
+
+RUN npm ci && npm run build
 
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
@@ -34,7 +29,6 @@ COPY --from=build /app/apps/frontend/dist ./apps/frontend/dist
 COPY --from=build /app/content ./content
 
 EXPOSE 8787
-# Railway uses its own health checks; this helps docker compose / local
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD node -e "const p=process.env.PORT||8787;fetch('http://127.0.0.1:'+p+'/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
