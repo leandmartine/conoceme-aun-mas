@@ -14,6 +14,7 @@ const CHAPTER_ACCENT: Record<string, string> = {
 export class PlacePanel {
   private root: HTMLElement;
   private card: HTMLElement;
+  private scrollEl: HTMLElement;
   private body: HTMLElement;
   private titleEl: HTMLElement;
   private eyebrowEl: HTMLElement;
@@ -21,6 +22,8 @@ export class PlacePanel {
   private linksEl: HTMLElement;
   private open = false;
   private onKey: ((e: KeyboardEvent) => void) | null = null;
+  private onWheel: ((e: WheelEvent) => void) | null = null;
+  private onTouchMove: ((e: TouchEvent) => void) | null = null;
 
   constructor(host: HTMLElement) {
     this.root = document.createElement('aside');
@@ -31,17 +34,22 @@ export class PlacePanel {
     this.root.innerHTML = `
       <div class="place-panel__card" data-card>
         <div class="place-panel__accent" data-accent aria-hidden="true"></div>
-        <button type="button" class="place-panel__close" aria-label="Cerrar">×</button>
-        <p class="place-panel__eyebrow" data-eyebrow></p>
-        <h2 class="place-panel__title" data-title></h2>
-        <p class="place-panel__meta" data-meta></p>
-        <div class="place-panel__body" data-body></div>
-        <div class="place-panel__links" data-links></div>
-        <p class="place-panel__hint">Esc o × para cerrar · seguí explorando el mapa</p>
+        <header class="place-panel__head">
+          <button type="button" class="place-panel__close" aria-label="Cerrar">×</button>
+          <p class="place-panel__eyebrow" data-eyebrow></p>
+          <h2 class="place-panel__title" data-title></h2>
+          <p class="place-panel__meta" data-meta></p>
+        </header>
+        <div class="place-panel__scroll" data-scroll>
+          <div class="place-panel__body" data-body></div>
+          <div class="place-panel__links" data-links></div>
+          <p class="place-panel__hint">Esc o × para cerrar · scrolleá para leer todo</p>
+        </div>
       </div>
     `;
     host.append(this.root);
     this.card = this.root.querySelector('[data-card]') as HTMLElement;
+    this.scrollEl = this.root.querySelector('[data-scroll]') as HTMLElement;
     this.body = this.root.querySelector('[data-body]') as HTMLElement;
     this.titleEl = this.root.querySelector('[data-title]') as HTMLElement;
     this.eyebrowEl = this.root.querySelector('[data-eyebrow]') as HTMLElement;
@@ -52,6 +60,17 @@ export class PlacePanel {
     this.root.addEventListener('click', (e) => {
       if (e.target === this.root) this.hide();
     });
+
+    // Keep wheel/touch scroll on the panel; Phaser often steals the wheel otherwise
+    this.onWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+    };
+    this.onTouchMove = (e: TouchEvent) => {
+      e.stopPropagation();
+    };
+    this.card.addEventListener('wheel', this.onWheel, { passive: true });
+    this.scrollEl.addEventListener('wheel', this.onWheel, { passive: true });
+    this.scrollEl.addEventListener('touchmove', this.onTouchMove, { passive: true });
   }
 
   get isOpen(): boolean {
@@ -64,6 +83,7 @@ export class PlacePanel {
     this.root.classList.remove('place-panel--out');
     this.root.classList.add('place-panel--in');
     this.bindKeys();
+    this.scrollEl.scrollTop = 0;
 
     this.eyebrowEl.textContent = 'Lugar del mapa';
     this.titleEl.textContent = 'Cargando…';
@@ -74,6 +94,10 @@ export class PlacePanel {
     try {
       const detail = await api.place(id);
       this.render(detail);
+      // After content paints, ensure scrollable area is focused for keyboard users
+      requestAnimationFrame(() => {
+        this.scrollEl.scrollTop = 0;
+      });
     } catch {
       this.titleEl.textContent = 'No se pudo cargar';
       this.body.innerHTML = '<p>Reintentá en un momento. ¿Backend en :8787?</p>';
@@ -94,6 +118,13 @@ export class PlacePanel {
 
   destroy(): void {
     this.unbindKeys();
+    if (this.onWheel) {
+      this.card.removeEventListener('wheel', this.onWheel);
+      this.scrollEl.removeEventListener('wheel', this.onWheel);
+    }
+    if (this.onTouchMove) {
+      this.scrollEl.removeEventListener('touchmove', this.onTouchMove);
+    }
     this.root.remove();
   }
 
@@ -157,12 +188,11 @@ function simpleMarkdown(md: string): string {
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
   );
   const withBold = withLinks.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  // bullets
   const withLists = withBold.replace(
     /(?:^|\n)- (.+)(?=\n|$)/g,
     (_m, item: string) => `\n<li>${item}</li>`,
   );
-  const blocked = withLists
+  return withLists
     .split(/\n{2,}/)
     .map((block) => {
       const clean = block.replace(/^#+\s*/gm, '').trim();
@@ -172,5 +202,4 @@ function simpleMarkdown(md: string): string {
       return `<p>${clean.replace(/\n/g, '<br/>')}</p>`;
     })
     .join('');
-  return blocked;
 }
