@@ -1,83 +1,66 @@
 # PROYECTO — conoceme-aun-mas
 
-Living status board. Update on every meaningful PR.
-
 | Field | Value |
 |-------|--------|
-| **Repo** | `leandmartine/conoceme-aun-mas` (public) |
-| **Status** | 🟡 Foundation — design locked direction, code not started |
-| **Stack** | Vite · TypeScript · Phaser 3 · GSAP · Lenis |
-| **Art** | Híbrido moderno · top-down Uruguay |
-| **Workflow** | Branch → PR → review → merge to `main` only |
+| **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
+| **Owner** | Leandro Emanuel Martinez (mergea siempre) |
+| **Status** | 🟡 Docs de arquitectura + perfil + AI guide — scaffold de código next |
+| **Stack** | FE: Vite·Phaser·GSAP·Lenis · BE: Node·TS·REST · shared types |
+| **Art** | Híbrido moderno · top-down · minimapa brújula |
+| **Progression** | Todo desbloqueado desde el inicio |
 
 ---
 
 ## Current focus
 
-1. Land foundation docs (PR #0).  
-2. Scaffold tooling (PR #1).  
-3. Parallel tracks: cinematic shell (PR #2) + Phaser player (PR #3).
+1. Merge de la PR de arquitectura/perfil/AI/README.  
+2. Siguiente: monorepo scaffold `apps/frontend` + `apps/backend` + `packages/shared`.
 
 ---
 
 ## Changelog
 
+### 2026-07-17 — Architecture & profile
+
+- Split FE/BE documentado (SOLID, REST `/api/v1`, API key futura).  
+- `docs/AI_GUIDE.md` — rol de IA, anti-jailbreak, tono humano.  
+- Minimapa tipo brújula como feature de producto.  
+- Perfil real: Leandro Emanuel Martinez; links LinkedIn/GitHub/email.  
+- Content de lugares base; todo unlocked.  
+- Personaje: alto/grande, tez café con leche, ojos oscuros, pelo negro (inspirado, no idéntico).  
+- README limpio (sin sección de colaboración externa).  
+- Workflow agent: avisar PR lista; no commitear sobre PRs ya abiertas/listas.
+
 ### 2026-07-17 — Foundation
 
-- Created living design system (`docs/DESIGN.md`).
-- Locked stack: Vite + TS + Phaser 3 + GSAP + Lenis.
-- Locked art: híbrido moderno, top-down.
-- Locked product name: **conoceme-aun-mas**.
-- Collaboration rules: PR-only, peer workflow human + agent.
-- Content model designed for progressive bio loading.
+- Visión inicial, stack de juego, Uruguay map concept.
 
 ---
 
-## Content backlog (fill progressively)
+## Content backlog
 
-| Block | Status | Notes |
-|-------|--------|-------|
-| About / bio corta | ⬜ empty | Rambla zone |
-| Experiencia laboral | ⬜ empty | Ciudad Vieja |
-| Proyectos destacados | ⬜ empty | Skyline |
-| Estudios | ⬜ empty | Universidad |
-| GitHub / OSS | ⬜ empty | Puerto — link repos |
-| Contacto | ⬜ empty | Faro |
-| Skills / stack | ⬜ empty | Optional campo quest |
-
----
-
-## Open questions for Leandro
-
-- [ ] Nombre + título profesional para title card  
-- [ ] Links: GitHub, LinkedIn, email, otros  
-- [ ] Personaje: ilustrado custom vs avatar basado en vos  
-- [ ] Prioridad de zonas de contenido  
-- [ ] Dominio / deploy preferido  
+| Block | Status |
+|-------|--------|
+| Profile base | ✅ `content/profile.json` |
+| Places stub | ✅ md + index |
+| Timeline laboral fino | ⬜ ampliar desde LinkedIn |
+| ORT detalle | ⬜ |
+| Proyectos skyline | ⬜ |
+| Knowledge IA | ⬜ |
 
 ---
 
-## PR pipeline (see DESIGN §15)
+## Pipeline
 
-| PR | Title | State |
-|----|-------|-------|
-| 0 | docs: foundation design & collaboration rules | 🔵 in progress |
-| 1 | chore: scaffold Vite + TS + base tooling | ⬜ |
-| 2 | feat(shell): cinematic title + Lenis/GSAP intro | ⬜ |
-| 3 | feat(game): Phaser boot + player movement | ⬜ |
-| 4 | feat(world): Uruguay zones scaffold | ⬜ |
-| 5 | feat(content): place system + POI panels | ⬜ |
-| 6 | feat(art): hybrid art pass (Rambla first) | ⬜ |
-| 7 | feat(polish): handoff, audio, a11y | ⬜ |
-| 8 | feat(content): real experience/education/github | ⬜ |
-| 9 | chore: Vercel + CI on PR | ⬜ |
-
----
-
-## Working agreement (short)
-
-1. **Nunca** pushear directo a `main`.  
-2. Una PR = una intención clara.  
-3. Actualizar `DESIGN.md` / este archivo si cambia la dirección.  
-4. Agent y humano se tratan como compañeros: reviews, commits atómicos, CI verde.  
-5. La belleza no es opcional — si se ve genérico, no mergeamos.
+| PR | State |
+|----|-------|
+| Foundation | ✅ en main (parcial) |
+| docs: architecture + profile + AI + compass | 🔵 avisar cuando lista |
+| chore: monorepo scaffold | ⬜ |
+| feat(api): profile + places | ⬜ |
+| feat(shell): intro | ⬜ |
+| feat(game): player + compass | ⬜ |
+| feat(ui): panels | ⬜ |
+| feat(art): character + rambla | ⬜ |
+| feat(ai): stub + api key | ⬜ |
+| chore: deploy + CI | ⬜ |

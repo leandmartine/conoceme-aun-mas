@@ -1,6 +1,3 @@
-# CI activates fully after the Vite scaffold PR lands.
-# For now this is a placeholder that validates the repo structure.
-
 name: CI
 
 on:
@@ -11,14 +8,19 @@ on:
 
 jobs:
   docs-guard:
-    name: Docs present
+    name: Docs & content present
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Check foundation files
         run: |
           test -f docs/DESIGN.md
+          test -f docs/ARCHITECTURE.md
+          test -f docs/AI_GUIDE.md
+          test -f docs/WORLD_MAP.md
           test -f PROYECTO.md
           test -f AGENTS.md
-          test -f CONTRIBUTING.md
-          echo "Foundation docs OK"
+          test -f content/profile.json
+          test -f content/places.index.json
+          test -f content/places/rambla.md
+          echo "Foundation docs + content OK"

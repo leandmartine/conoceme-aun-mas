@@ -1,65 +1,58 @@
 # conoceme-aun-mas
 
-**Status:** foundation / design locked · code scaffolding next  
-**Stack:** Vite · TypeScript · Phaser 3 · GSAP · Lenis  
-**View:** top-down · art direction: **híbrido moderno**
+Un portafolio que se **juega**. Un Uruguay estilizado que se **explora**.  
+No es una web más: es una experiencia cinematográfica + mundo top-down.
+
+**Leandro Emanuel Martinez** — Aspiring Software Developer · student · Montevideo, Uruguay
+
+| | |
+|---|---|
+| **Stack** | Frontend (Vite · Phaser 3 · GSAP · Lenis) · Backend REST (Node · TypeScript) |
+| **Vista** | Top-down · arte híbrido moderno |
+| **Repo** | Público, solo para quien quiera chusmear el código |
 
 ---
 
-## What this is
+## Qué es
 
-A hybrid experience:
+1. **Shell cinematográfica** — intro con scroll (GSAP + Lenis)  
+2. **Mundo jugable** — personaje top-down, zonas de Uruguay, **minimapa tipo brújula**  
+3. **API REST** — perfil, lugares, y (más adelante) consultas con API key sobre quién soy / estado del jugador  
+4. **Compañero IA** (futuro) — responde sobre mí y el mundo del juego, sin salirse de tema  
 
-1. **Cinematic shell** — Apple-grade scroll intro (GSAP + Lenis)  
-2. **Playable world** — top-down character, real game systems (Phaser 3)  
-3. **Portfolio places** — zones inspired by Uruguay that open experience, studies, GitHub, projects, contact  
-
-Content is data-driven and filled **progressively**.
-
----
-
-## Docs (start here)
-
-| Doc | Purpose |
-|-----|---------|
-| [`docs/DESIGN.md`](./docs/DESIGN.md) | **Source of truth** — vision, stack, world, PR plan |
-| [`PROYECTO.md`](./PROYECTO.md) | Living status board |
-| [`AGENTS.md`](./AGENTS.md) | Human + AI collaboration contract |
-| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | PR workflow |
+Todo el contenido del mapa está **disponible desde el inicio**: el visitante elige a dónde ir.
 
 ---
 
-## Collaboration
+## Documentación
 
-- Public GitHub repo  
-- **Every change lands via Pull Request**  
-- Human and agents work as peers with review  
+| Doc | Para qué |
+|-----|----------|
+| [`docs/DESIGN.md`](./docs/DESIGN.md) | Visión de producto y decisiones |
+| [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | Frontend / backend, SOLID, REST, API key |
+| [`docs/WORLD_MAP.md`](./docs/WORLD_MAP.md) | Zonas Uruguay → capítulos del portfolio |
+| [`docs/AI_GUIDE.md`](./docs/AI_GUIDE.md) | Rol de la IA (límites, anti-bypass, tono) |
+| [`PROYECTO.md`](./PROYECTO.md) | Estado del proyecto |
+| [`AGENTS.md`](./AGENTS.md) | Reglas para agentes de código en este repo |
 
-```bash
-git checkout -b feat/my-thing
-# ... work ...
-gh pr create
+---
+
+## Estructura (objetivo)
+
+```text
+apps/
+  frontend/     # shell + juego (cliente)
+  backend/      # API REST
+packages/
+  shared/       # tipos y contratos compartidos
+content/        # datos de portfolio (fuente de verdad editorial)
+docs/
 ```
 
 ---
 
-## Local run
+## Contacto
 
-Scaffolding lands in the next PRs. After that:
-
-```bash
-npm install
-npm run dev
-```
-
----
-
-## Author
-
-Leandro Martínez — Uruguay  
-
----
-
-## License
-
-TBD (personal portfolio). All rights reserved until specified.
+- GitHub: [leandmartine](https://github.com/leandmartine)  
+- LinkedIn: [leandmartine](https://www.linkedin.com/in/leandmartine/)  
+- Email: leandromartinez38@gmail.com  
