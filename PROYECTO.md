@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Shell cinematográfica GSAP/Lenis — juego Phaser next |
+| **Status** | 🟡 Mundo Phaser jugable + brújula — art pass next |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -13,12 +13,19 @@
 
 ## Current focus
 
-1. Merge shell cinematográfica (esta PR).  
-2. Siguiente: Phaser player + minimapa brújula.
+1. Merge mundo Phaser + brújula (esta PR).  
+2. Siguiente: art pass (Rambla/personaje) + paneles más ricos.
 
 ---
 
 ## Changelog
+
+### 2026-07-17 — Game player + compass
+
+- Phaser 3 top-down world, lazy-loaded al entrar.  
+- Player (procedural), WASD/flechas + joystick touch.  
+- POIs desde API, interacción E / botón, place panel.  
+- Minimapa brújula con rumbo a lugares.
 
 ### 2026-07-17 — Shell cinematic
 
@@ -65,8 +72,8 @@
 | docs: world map (#1) | ✅ |
 | docs: architecture + profile + AI (#2) | ✅ |
 | chore: monorepo scaffold (#3) | ✅ |
-| feat(shell): GSAP intro | 🔵 esta PR |
-| feat(game): player + compass | ⬜ |
+| feat(shell): GSAP intro (#4) | ✅ |
+| feat(game): player + compass | 🔵 esta PR |
 | feat(ui): place panels | ⬜ |
 | feat(art): character + rambla | ⬜ |
 | feat(ai): stub + api key | ⬜ |

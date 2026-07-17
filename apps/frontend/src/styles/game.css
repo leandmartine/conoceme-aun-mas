@@ -1,0 +1,258 @@
+/* Game layer */
+#game-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0b1220;
+}
+
+.game-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: rgba(247, 242, 233, 0.75);
+  letter-spacing: 0.06em;
+}
+
+#game-root canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#game-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  pointer-events: none;
+}
+
+#game-hud > * {
+  pointer-events: auto;
+}
+
+body.mode-game {
+  overflow: hidden;
+}
+
+body.mode-game .shell,
+body.mode-game #app {
+  /* shell is hidden via root.hidden */
+}
+
+/* Compass HUD */
+.compass {
+  position: absolute;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: 148px;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  user-select: none;
+}
+
+.compass__disc {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(27, 79, 114, 0.45), rgba(11, 18, 32, 0.92) 70%),
+    rgba(11, 18, 32, 0.85);
+  border: 1px solid rgba(247, 242, 233, 0.18);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 0 24px rgba(126, 182, 217, 0.12);
+}
+
+.compass__ring {
+  position: absolute;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 1px dashed rgba(244, 196, 48, 0.25);
+  pointer-events: none;
+}
+
+.compass__n {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--uy-sun, #f4c430);
+  font-weight: 600;
+}
+
+.compass__player {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--uy-coral, #e07a5f);
+  box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.25);
+  z-index: 2;
+}
+
+.compass__marker {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0b1220;
+  background: #7eb6d9;
+  cursor: pointer;
+  transition:
+    transform 0.08s linear,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.compass__marker--focus {
+  background: #f4c430;
+  box-shadow: 0 0 0 3px rgba(244, 196, 48, 0.35);
+}
+
+.compass__bearing {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 28px solid rgba(224, 122, 95, 0.95);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 4px rgba(224, 122, 95, 0.5));
+}
+
+.compass__label {
+  margin: 0;
+  max-width: 11rem;
+  text-align: center;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: rgba(247, 242, 233, 0.55);
+}
+
+/* Place panel overlay */
+.place-panel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  background: rgba(5, 10, 18, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.place-panel[hidden] {
+  display: none !important;
+}
+
+.place-panel__card {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(70dvh, 520px);
+  overflow: auto;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border-radius: 1.15rem 1.15rem 0.85rem 0.85rem;
+  border: 1px solid rgba(247, 242, 233, 0.12);
+  background:
+    linear-gradient(165deg, rgba(126, 182, 217, 0.1), transparent 40%),
+    rgba(11, 18, 32, 0.96);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.4);
+  color: #f7f2e9;
+}
+
+.place-panel__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: rgba(247, 242, 233, 0.7);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.place-panel__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f4c430;
+}
+
+.place-panel__title {
+  margin: 0 2rem 0.75rem 0;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+}
+
+.place-panel__body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(247, 242, 233, 0.82);
+}
+
+.place-panel__body p {
+  margin: 0 0 0.75rem;
+}
+
+.place-panel__body a {
+  color: #7eb6d9;
+}
+
+.place-panel__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.place-panel__link {
+  color: #7eb6d9;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(126, 182, 217, 0.35);
+}
+
+.place-panel__link:hover {
+  color: #f7f2e9;
+}
+
+@media (max-width: 640px) {
+  .compass {
+    right: 0.65rem;
+    bottom: 0.65rem;
+    width: 128px;
+  }
+
+  .compass__disc,
+  .compass__ring {
+    width: 112px;
+    height: 112px;
+  }
+}

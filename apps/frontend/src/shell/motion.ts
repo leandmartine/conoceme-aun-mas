@@ -50,7 +50,7 @@ export function bindShellMotion(root: HTMLElement): MotionHandle {
       0.15,
     )
       .fromTo(
-        root.querySelector('.shell__cta'),
+        root.querySelector('.shell__cta-row'),
         { y: 24, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.7 },
         '-=0.35',
@@ -137,17 +137,19 @@ export function bindShellMotion(root: HTMLElement): MotionHandle {
       );
     });
 
-    // Soft floating CTA pulse
-    gsap.to(root.querySelector('.shell__cta:not(:disabled)'), {
-      boxShadow: '0 0 0 12px rgba(224,122,95,0)',
-      repeat: -1,
-      duration: 2.2,
-      ease: 'power1.inOut',
-      keyframes: [
-        { boxShadow: '0 0 0 0 rgba(224,122,95,0.35)' },
-        { boxShadow: '0 0 0 14px rgba(224,122,95,0)' },
-      ],
-    });
+    const primaryCta = root.querySelector('.shell__cta:not(.shell__cta--ghost):not(:disabled)');
+    if (primaryCta) {
+      gsap.to(primaryCta, {
+        boxShadow: '0 0 0 12px rgba(224,122,95,0)',
+        repeat: -1,
+        duration: 2.2,
+        ease: 'power1.inOut',
+        keyframes: [
+          { boxShadow: '0 0 0 0 rgba(224,122,95,0.35)' },
+          { boxShadow: '0 0 0 14px rgba(224,122,95,0)' },
+        ],
+      });
+    }
   }, root);
 
   return {
