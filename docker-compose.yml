@@ -14,10 +14,10 @@ services:
       PORT: 8787
       CONTENT_ROOT: /app/content
       STATIC_ROOT: /app/apps/frontend/dist
-      # Same-origin SPA + API — CORS less critical; keep explicit for safety
       CORS_ORIGIN: http://localhost:8787
       PORTFOLIO_API_KEYS: ${PORTFOLIO_API_KEYS:-dev-local-key}
-      # XAI_API_KEY: ${XAI_API_KEY:-}
+      PUBLIC_COMPANION_KEY: ${PUBLIC_COMPANION_KEY:-dev-local-key}
+
     healthcheck:
       test:
         [

@@ -81,12 +81,12 @@ npm run build
 
 ## Deploy
 
-Scaffold listo (Docker + SPA+API same-origin). **Publicar solo cuando Leandro lo pida.**  
-Guía: [`docs/DEPLOY.md`](./docs/DEPLOY.md).
+**Recomendado: [Railway](https://railway.app)** — un servicio, Dockerfile, auto-deploy al mergear `main`.  
+Guía paso a paso: [`docs/DEPLOY.md`](./docs/DEPLOY.md).
 
 ```bash
-# smoke local estilo prod (no sube a internet)
-export PORTFOLIO_API_KEYS=dev-local-key
+# smoke local estilo prod
+export PUBLIC_COMPANION_KEY=dev-local-key
 docker compose up --build
 # http://localhost:8787
 ```

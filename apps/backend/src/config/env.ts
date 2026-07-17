@@ -13,6 +13,11 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   /** Comma-separated keys for AI chat (Bearer / X-Api-Key). */
   PORTFOLIO_API_KEYS: z.string().optional(),
+  /**
+   * Key the SPA may use for the in-game companion (public, rate-limited).
+   * Auto-added to accepted keys; exposed via GET /ai/status.
+   */
+  PUBLIC_COMPANION_KEY: z.string().optional(),
   /** Optional SpaceXAI / xAI key for future LLM mode (server-only). */
   XAI_API_KEY: z.string().optional(),
   AI_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
@@ -23,6 +28,7 @@ export type Env = z.infer<typeof envSchema> & {
   contentRoot: string;
   staticRoot: string | null;
   apiKeys: Set<string>;
+  publicCompanionKey: string | null;
 };
 
 function resolveMonorepoRoot(): string {
@@ -57,10 +63,14 @@ export function loadEnv(raw: NodeJS.ProcessEnv = process.env): Env {
       .filter(Boolean),
   );
 
+  const publicCompanionKey = (parsed.PUBLIC_COMPANION_KEY ?? '').trim() || null;
+  if (publicCompanionKey) apiKeys.add(publicCompanionKey);
+
   return {
     ...parsed,
     contentRoot,
     staticRoot,
     apiKeys,
+    publicCompanionKey,
   };
 }
