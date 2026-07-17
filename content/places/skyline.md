@@ -1,12 +1,12 @@
 # Skyline
 
-El skyline es el capítulo de **proyectos**: lo que construyo o estoy construyendo.
+El skyline es el capítulo de **proyectos** y herramientas.
 
 ## En el horizonte
-- **conoceme-aun-mas** — este portfolio-juego (Vite, Phaser, API REST, shell cinematográfica). Es el edificio más visible del mapa: código público para quien quiera chusmear.
-- Proyectos de práctica con **C#**, **ASP.NET MVC**, **SQL** y web, enfocados en lógica de negocio y datos.
+- **conoceme-aun-mas** — este portfolio-juego (Vite, Phaser, API REST). Código público para quien quiera chusmear.
+- Práctica con **HTML, CSS, JS, SQL, C#**, Bootstrap y Tailwind.
 
-## Cómo pienso los builds
-Prefiero algo **jugable y honesto** a un muro de texto. Cada proyecto debería poder contarse como un lugar en el mapa.
+## Herramientas
+HTML · CSS · JS · SQL · C# · Bootstrap · Tailwind · AWS · Azure · Microsoft Office · Google
 
-¿Tenés un repo o case study para sumar al skyline? Escribime desde el Faro.
+Prefiero algo **jugable y honesto** a un muro de texto. Escribime desde el Faro si querés charlar de un proyecto.

@@ -1,10 +1,14 @@
 # Universidad
 
-Formación en **Universidad ORT Uruguay**, alineada a software e IT.
+## En curso · Universidad ORT Uruguay
+**Analista en Tecnologías de la Información (ORT).**
+
+## 2022 · Bachillerato
+Completo, orientación humanística.
 
 ## Enfoque
 - Bases de programación y sistemas  
-- Interés en aplicar lo académico a **problemas reales** (datos, web, producto)  
-- Stack que vengo trabajando: **C#**, **ASP.NET MVC**, **SQL**, análisis de datos, tecnologías web  
+- Aplicar lo académico a **problemas reales** (datos, web, producto)  
+- Herramientas: HTML, CSS, JS, SQL, C#, Bootstrap, Tailwind, AWS, Azure  
 
 Soy **estudiante** y estoy en modo construcción permanente.
