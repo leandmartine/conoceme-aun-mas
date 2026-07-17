@@ -63,6 +63,12 @@ export interface ProfileDto {
     skin: string;
     eyes: string;
     hair: string;
+    /** e.g. grey marled quarter-zip from CV photo */
+    outfit?: string;
+    /** how the in-game sprite is produced */
+    inGame?: string;
+    /** HUD / loading portrait path */
+    hudPortrait?: string;
   };
 }
 

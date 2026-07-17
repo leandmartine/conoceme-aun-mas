@@ -52,8 +52,16 @@ export async function enterWorld(options: {
   const loading = document.createElement('div');
   loading.className = 'game-loading';
   loading.innerHTML = `
+    <img
+      class="game-loading__portrait"
+      src="/media/leandro.jpg"
+      alt=""
+      width="72"
+      height="72"
+      decoding="async"
+    />
     <p class="game-loading__title">Cargando el mundo</p>
-    <p class="game-loading__sub">Rambla, ciudad, campo…</p>
+    <p class="game-loading__sub">Tu personaje entra a la Rambla…</p>
   `;
   root.append(loading);
 
