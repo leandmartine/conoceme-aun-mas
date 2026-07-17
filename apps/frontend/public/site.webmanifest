@@ -1,24 +1,29 @@
 {
   "name": "conoceme aún más",
   "short_name": "conoceme",
+  "description": "Portfolio jugable de Leandro E. Martinez",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1220",
+  "theme_color": "#0B1220",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/favicon.svg?v=2",
       "type": "image/svg+xml",
-      "sizes": "any"
+      "sizes": "any",
+      "purpose": "any"
     },
     {
-      "src": "/apple-touch-icon.png",
+      "src": "/favicon.png?v=2",
       "type": "image/png",
-      "sizes": "180x180"
+      "sizes": "32x32",
+      "purpose": "any"
     },
     {
-      "src": "/favicon.png",
+      "src": "/apple-touch-icon.png?v=2",
       "type": "image/png",
-      "sizes": "32x32"
+      "sizes": "180x180",
+      "purpose": "any"
     }
-  ],
-  "theme_color": "#0B1220",
-  "background_color": "#0B1220",
-  "display": "standalone"
+  ]
 }
