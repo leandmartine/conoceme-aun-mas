@@ -126,6 +126,14 @@ export function createGame(options: {
       } catch {
         /* ignore */
       }
+      // Never leave the green parent covering the landing
+      const parent = options.parent;
+      parent.replaceChildren();
+      parent.hidden = true;
+      parent.style.display = 'none';
+      parent.style.visibility = 'hidden';
+      parent.style.pointerEvents = 'none';
+      parent.style.opacity = '0';
     },
   };
 

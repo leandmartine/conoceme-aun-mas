@@ -9,6 +9,15 @@
   background: #4f7a58;
 }
 
+/* Must beat any inline display:block left by Phaser / createGame */
+#game-root[hidden],
+#game-hud[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
 .game-loading {
   position: absolute;
   inset: 0;
