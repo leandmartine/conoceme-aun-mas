@@ -5,13 +5,22 @@ import { runHandoff } from '../ui/handoff';
 
 let session: GameSession | null = null;
 
+function clearHandoffs(): void {
+  document.querySelectorAll('.handoff').forEach((n) => n.remove());
+}
+
 /** Lazy-loads Phaser so the cinematic shell stays light. */
 export async function enterWorld(options: {
   places: PlacesIndexDto;
   onExitToShell: () => void;
 }): Promise<void> {
+  if (!options.places?.places?.length) {
+    console.error('[enterWorld] places vacíos');
+    return;
+  }
+
+  // Tear down any previous session completely
   if (session) {
-    // Avoid stuck black session from a previous failed boot
     try {
       session.destroy();
     } catch {
@@ -24,11 +33,9 @@ export async function enterWorld(options: {
   await gameAudio.unlock();
   gameAudio.tick();
 
-  // Clear any stuck handoff overlays from a prior run
-  document.querySelectorAll('.handoff').forEach((n) => n.remove());
-
+  clearHandoffs();
   await runHandoff('to-game');
-  document.querySelectorAll('.handoff').forEach((n) => n.remove());
+  clearHandoffs();
 
   document.body.classList.add('mode-game');
   const root = document.getElementById('game-root');
@@ -54,28 +61,27 @@ export async function enterWorld(options: {
     const { createGame } = await import('../game/createGame');
     loading.remove();
 
+    // Host callback after Phaser session already destroyed by createGame.onExit
+    const afterDestroy = async () => {
+      session = null;
+      clearHandoffs();
+      await runHandoff('to-shell');
+      clearHandoffs();
+      root.hidden = true;
+      hud.hidden = true;
+      root.replaceChildren();
+      hud.replaceChildren();
+      document.body.classList.remove('mode-game');
+      options.onExitToShell();
+    };
+
     session = createGame({
       parent: root,
       hudHost: hud,
       places: options.places,
-      onExit: async () => {
+      onExit: () => {
         gameAudio.tick();
-        const current = session;
-        session = null;
-        try {
-          current?.destroy();
-        } catch {
-          /* ignore */
-        }
-        document.querySelectorAll('.handoff').forEach((n) => n.remove());
-        await runHandoff('to-shell');
-        document.querySelectorAll('.handoff').forEach((n) => n.remove());
-        root.hidden = true;
-        hud.hidden = true;
-        root.replaceChildren();
-        hud.replaceChildren();
-        document.body.classList.remove('mode-game');
-        options.onExitToShell();
+        void afterDestroy();
       },
     });
   } catch (err) {
@@ -85,6 +91,7 @@ export async function enterWorld(options: {
       <p class="game-loading__sub">${err instanceof Error ? err.message : 'Error desconocido'}</p>
     `;
     session = null;
+    document.body.classList.remove('mode-game');
   }
 }
 

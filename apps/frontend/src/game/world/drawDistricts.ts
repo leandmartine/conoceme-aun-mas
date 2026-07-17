@@ -1,4 +1,9 @@
+import type Phaser from 'phaser';
 import { WORLD_SIZE, type WorldPoi } from './mapLayout';
+
+function clamp(n: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, n));
+}
 
 /** Dense props per place — no extra water textures (ocean is drawn once in the map). */
 export function drawDistricts(
@@ -187,7 +192,7 @@ function drawRambla(
     g.fillRect(x, bandY + 2, 30, 6);
   }
   for (const ox of [-160, -40, 90, 200]) {
-    const x = Phaser.Math.Clamp(p.x + ox, 40, WORLD_SIZE - 40);
+    const x = clamp(p.x + ox, 40, WORLD_SIZE - 40);
     g.fillStyle(0x5a4030, 0.9);
     g.fillRect(x, bandY - 52, 5, 28);
     g.fillStyle(0x3a6b40, 0.85);

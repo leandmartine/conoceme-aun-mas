@@ -112,10 +112,9 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
     this.cameras.main.setBackgroundColor('#4f7a58');
-    // Ensure we never stay stuck on a black fade
+    // No fade FX — avoid stuck black/transparent camera on some browsers
     this.cameras.main.resetFX();
     this.cameras.main.setAlpha(1);
-    this.cameras.main.fadeIn(400, 79, 122, 88);
 
     const kb = this.input.keyboard;
     if (!kb) {

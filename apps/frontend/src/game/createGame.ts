@@ -14,8 +14,12 @@ export function createGame(options: {
   places: PlacesIndexDto;
   onExit: () => void | Promise<void>;
 }): GameSession {
-  const placePanel = new PlacePanel(options.hudHost);
+  if (!options.places?.places?.length) {
+    throw new Error('No hay lugares para armar el mapa');
+  }
 
+  const placePanel = new PlacePanel(options.hudHost);
+  let destroyed = false;
   let gameRef: Phaser.Game;
 
   const data: WorldSceneData = {
@@ -23,20 +27,24 @@ export function createGame(options: {
     hudHost: options.hudHost,
     placePanel,
     onExit: () => {
+      // Single teardown path: destroy game, then notify host
       session.destroy();
       void options.onExit();
     },
   };
 
-  // Ensure parent is visible and has size before Phaser boots
   options.parent.hidden = false;
   options.parent.style.display = 'block';
+  options.parent.style.visibility = 'visible';
+
+  const w = Math.max(window.innerWidth, 320);
+  const h = Math.max(window.innerHeight, 320);
 
   gameRef = new Phaser.Game({
     type: Phaser.AUTO,
     parent: options.parent,
-    width: Math.max(window.innerWidth, 320),
-    height: Math.max(window.innerHeight, 320),
+    width: w,
+    height: h,
     backgroundColor: '#4f7a58',
     physics: {
       default: 'arcade',
@@ -48,8 +56,8 @@ export function createGame(options: {
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: Math.max(window.innerWidth, 320),
-      height: Math.max(window.innerHeight, 320),
+      width: w,
+      height: h,
     },
     scene: [BootScene, WorldScene],
     input: {
@@ -70,29 +78,37 @@ export function createGame(options: {
     },
   });
 
-  // Nudge a resize after layout (fixes black canvas on some browsers)
-  requestAnimationFrame(() => {
-    try {
-      gameRef.scale.resize(window.innerWidth, window.innerHeight);
-    } catch {
-      /* ignore */
-    }
-  });
-
   const onResize = () => {
+    if (destroyed) return;
     gameRef.scale.resize(window.innerWidth, window.innerHeight);
   };
   window.addEventListener('resize', onResize);
 
+  requestAnimationFrame(() => {
+    if (!destroyed) onResize();
+  });
+
   const session: GameSession = {
     destroy: () => {
+      if (destroyed) return;
+      destroyed = true;
       window.removeEventListener('resize', onResize);
-      placePanel.destroy();
-      const world = gameRef.scene.getScene('World') as WorldScene;
-      if (world?.sys?.settings?.active || world?.sys?.settings?.visible) {
-        world.shutdown();
+      try {
+        placePanel.destroy();
+      } catch {
+        /* ignore */
       }
-      gameRef.destroy(true);
+      try {
+        const world = gameRef.scene.getScene('World') as WorldScene | undefined;
+        world?.shutdown?.();
+      } catch {
+        /* ignore */
+      }
+      try {
+        gameRef.destroy(true);
+      } catch {
+        /* ignore */
+      }
     },
   };
 
