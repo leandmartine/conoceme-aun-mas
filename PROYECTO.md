@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟢 v1 lista · deploy Railway (ver docs/DEPLOY.md) |
+| **Status** | 🟢 v1 lista · self-host NAS/ZimaOS (ver docs/DEPLOY.md) |
 | **Stack** | FE: Vite·TS·Phaser 3·GSAP · BE: Hono·TS·REST · shared · content-driven |
 | **Art** | Híbrido moderno · top-down · minimapa brújula · personaje foto-inspired |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -13,8 +13,8 @@
 
 ## Current focus
 
-1. Deploy en **Railway** (auto desde `main`).  
-2. Opcional: dominio custom.  
+1. Host en **ZimaBlade / ZimaOS** (Docker + imagen GHCR).  
+2. Opcional: Cloudflare Tunnel + dominio.  
 3. Opcional: provider LLM SpaceXAI con `XAI_API_KEY`.
 
 ---

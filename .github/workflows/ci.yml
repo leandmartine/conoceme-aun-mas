@@ -27,6 +27,8 @@ jobs:
           test -f content/knowledge/about.md
           test -f Dockerfile
           test -f docker-compose.yml
+          test -f deploy/nas.env.example
+          test -f .github/workflows/publish-image.yml
           echo "Foundation docs + content + deploy scaffold OK"
 
   typecheck-test-build:
