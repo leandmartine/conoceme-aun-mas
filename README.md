@@ -81,13 +81,14 @@ npm run build
 
 ## Deploy
 
-**Recomendado: [Railway](https://railway.app)** — un servicio, Dockerfile, auto-deploy al mergear `main`.  
-Guía paso a paso: [`docs/DEPLOY.md`](./docs/DEPLOY.md).
+**Recomendado: NAS ZimaBlade / ZimaOS (Docker)** — sin free trial, mismo Dockerfile.  
+GitHub Actions publica la imagen en GHCR; el NAS solo hace `pull`.  
+Guía: [`docs/DEPLOY.md`](./docs/DEPLOY.md).
 
 ```bash
 # smoke local estilo prod
-export PUBLIC_COMPANION_KEY=dev-local-key
-docker compose up --build
+cp deploy/nas.env.example .env
+docker compose up -d --build
 # http://localhost:8787
 ```
 
