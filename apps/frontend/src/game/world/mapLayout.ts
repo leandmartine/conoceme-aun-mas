@@ -1,13 +1,14 @@
 import type { PlaceId, PlaceSummaryDto } from '@conoceme/shared';
 
-export const WORLD_SIZE = 2400;
-const PAD = 300;
+/** Compact world — places stay close so exploration feels tight. */
+export const WORLD_SIZE = 1600;
+const PAD = 180;
 
-/** Content map bounds (from places.index.json). */
-const CX0 = -120;
-const CX1 = 130;
-const CY0 = -100;
-const CY1 = 140;
+/** Content map bounds tuned to coastal cluster layout. */
+const CX0 = -55;
+const CX1 = 55;
+const CY0 = -45;
+const CY1 = 55;
 
 export interface WorldPoi {
   id: PlaceId;
@@ -19,15 +20,14 @@ export interface WorldPoi {
   color: number;
 }
 
-/** Palette aligned with Uruguay biomes + design tokens. */
 const ZONE_COLORS: Record<PlaceId, number> = {
-  rambla: 0x2a6f97, // río / costa
-  'ciudad-vieja': 0xc4a574, // piedra colonial
-  skyline: 0x5b7c99, // vidrio urbano
-  universidad: 0x4a7c59, // campus
-  puerto: 0x1b4f72, // muelle / agua profunda
-  campo: 0x5d8f4e, // pastura
-  faro: 0xe07a5f, // faro / atardecer
+  rambla: 0x2a6f97,
+  'ciudad-vieja': 0xc4a574,
+  skyline: 0x5b7c99,
+  universidad: 0x4a7c59,
+  puerto: 0x1b4f72,
+  campo: 0x5d8f4e,
+  faro: 0xe07a5f,
 };
 
 export function contentToWorld(mapX: number, mapY: number): { x: number; y: number } {
@@ -59,10 +59,23 @@ export function spawnFromPlaces(
   spawnId: PlaceId,
 ): { x: number; y: number } {
   const spawn = places.find((p) => p.id === spawnId) ?? places[0];
-  if (!spawn) return { x: WORLD_SIZE / 2, y: WORLD_SIZE * 0.7 };
+  if (!spawn) return { x: WORLD_SIZE / 2, y: WORLD_SIZE * 0.72 };
   return contentToWorld(spawn.map.x, spawn.map.y);
 }
 
 export function labelForPoi(poi: Pick<WorldPoi, 'title' | 'subtitle'>): string {
   return `${poi.title} — ${poi.subtitle}`;
 }
+
+/** Logical road graph — coastal city ring, not long diagonals across campo. */
+export const ROAD_LINKS: Array<[PlaceId, PlaceId]> = [
+  ['rambla', 'ciudad-vieja'],
+  ['rambla', 'puerto'],
+  ['rambla', 'faro'],
+  ['ciudad-vieja', 'puerto'],
+  ['ciudad-vieja', 'skyline'],
+  ['skyline', 'universidad'],
+  ['universidad', 'campo'],
+  ['campo', 'ciudad-vieja'],
+  ['skyline', 'faro'],
+];

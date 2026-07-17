@@ -7,7 +7,7 @@
       "title": "La Rambla",
       "chapter": "about",
       "subtitle": "Quién soy",
-      "map": { "x": 0, "y": 120 },
+      "map": { "x": 0, "y": 42 },
       "compassLabel": "About"
     },
     {
@@ -15,7 +15,7 @@
       "title": "Ciudad Vieja",
       "chapter": "experience",
       "subtitle": "Experiencia",
-      "map": { "x": -80, "y": 40 },
+      "map": { "x": -12, "y": 8 },
       "compassLabel": "XP"
     },
     {
@@ -23,7 +23,7 @@
       "title": "Skyline",
       "chapter": "projects",
       "subtitle": "Proyectos",
-      "map": { "x": 90, "y": 10 },
+      "map": { "x": 18, "y": 4 },
       "compassLabel": "Build"
     },
     {
@@ -31,7 +31,7 @@
       "title": "Universidad",
       "chapter": "education",
       "subtitle": "Estudios",
-      "map": { "x": 70, "y": -70 },
+      "map": { "x": 22, "y": -28 },
       "compassLabel": "Edu"
     },
     {
@@ -39,7 +39,7 @@
       "title": "Puerto",
       "chapter": "github",
       "subtitle": "Código & GitHub",
-      "map": { "x": -100, "y": 0 },
+      "map": { "x": -38, "y": 36 },
       "compassLabel": "Code"
     },
     {
@@ -47,7 +47,7 @@
       "title": "Campo",
       "chapter": "values",
       "subtitle": "Valores",
-      "map": { "x": -40, "y": -80 },
+      "map": { "x": -8, "y": -32 },
       "compassLabel": "Values"
     },
     {
@@ -55,7 +55,7 @@
       "title": "El Faro",
       "chapter": "contact",
       "subtitle": "Contacto",
-      "map": { "x": 110, "y": 50 },
+      "map": { "x": 40, "y": 38 },
       "compassLabel": "Hi"
     }
   ]

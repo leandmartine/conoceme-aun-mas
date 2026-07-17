@@ -65,9 +65,9 @@ export class WorldScene extends Phaser.Scene {
     this.spawnPois();
 
     const spawn = spawnFromPlaces(data.places.places, data.places.spawnPlaceId);
-    // Offset slightly south of landmark so we don't spawn inside marker
+    // Spawn on the promenade, slightly north of water edge
     const sx = spawn.x;
-    const sy = spawn.y + 40;
+    const sy = spawn.y - 20;
 
     this.playerShadow = this.add.image(sx, sy + 30, 'shadow').setDepth(9);
     this.player = this.physics.add.sprite(sx, sy, 'player', 0);
