@@ -5,7 +5,7 @@ Living status board. Update on every meaningful PR.
 | Field | Value |
 |-------|--------|
 | **Repo** | `leandmartine/conoceme-aun-mas` (public) |
-| **Status** | 🟡 Foundation — design locked direction, code not started |
+| **Status** | 🟡 Foundation landed on GitHub — next: Vite scaffold (PR #1 code) |
 | **Stack** | Vite · TypeScript · Phaser 3 · GSAP · Lenis |
 | **Art** | Híbrido moderno · top-down Uruguay |
 | **Workflow** | Branch → PR → review → merge to `main` only |
@@ -14,13 +14,19 @@ Living status board. Update on every meaningful PR.
 
 ## Current focus
 
-1. Land foundation docs (PR #0).  
-2. Scaffold tooling (PR #1).  
-3. Parallel tracks: cinematic shell (PR #2) + Phaser player (PR #3).
+1. ~~Land foundation docs (PR #0).~~ ✅ on `main`  
+2. World map doc + status (this PR).  
+3. Scaffold tooling (next: `chore/scaffold-vite`).  
+4. Parallel tracks: cinematic shell + Phaser player.
 
 ---
 
 ## Changelog
+
+### 2026-07-17 — World map
+
+- Added `docs/WORLD_MAP.md` (zone layout, spawn, priorities).
+- Marked foundation as landed; pipeline advanced.
 
 ### 2026-07-17 — Foundation
 
@@ -30,6 +36,7 @@ Living status board. Update on every meaningful PR.
 - Locked product name: **conoceme-aun-mas**.
 - Collaboration rules: PR-only, peer workflow human + agent.
 - Content model designed for progressive bio loading.
+- Public repo: https://github.com/leandmartine/conoceme-aun-mas
 
 ---
 
@@ -61,7 +68,8 @@ Living status board. Update on every meaningful PR.
 
 | PR | Title | State |
 |----|-------|-------|
-| 0 | docs: foundation design & collaboration rules | 🔵 in progress |
+| 0 | docs: foundation design & collaboration rules | ✅ merged (initial main) |
+| 0b | docs: world map + status board update | 🔵 this PR |
 | 1 | chore: scaffold Vite + TS + base tooling | ⬜ |
 | 2 | feat(shell): cinematic title + Lenis/GSAP intro | ⬜ |
 | 3 | feat(game): Phaser boot + player movement | ⬜ |
