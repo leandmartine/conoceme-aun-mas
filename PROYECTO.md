@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Art pass personaje + texturas — polish UI next |
+| **Status** | 🟡 Polish paneles + handoff — seguir en localhost hasta que sea potable |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -19,6 +19,12 @@
 ---
 
 ## Changelog
+
+### 2026-07-17 — Polish panels + handoff
+
+- Panel de lugar premium (acento por capítulo, meta “Lugar — tema”, links pill).  
+- Handoff cinematográfico shell ↔ juego.  
+- SFX procedural + mute; coach mark primera vez; topbar DOM.
 
 ### 2026-07-17 — Art: character + terrain textures
 
