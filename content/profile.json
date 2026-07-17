@@ -1,15 +1,17 @@
 {
   "name": "Leandro Emanuel Martinez",
-  "headline": "Aspiring Software Developer, student",
+  "headline": "Aspiring Software Developer · estudiante",
   "location": "Montevideo, Uruguay",
-  "tagline": "conoceme aun mas",
-  "summary": "Profesional con experiencia en banca y fintech, en transición activa hacia el desarrollo de software. Estudiante en Montevideo. Enfocado en C#, ASP.NET MVC, SQL, análisis de datos y web — con ganas de construir productos con oficio, no páginas genéricas.",
+  "tagline": "conoceme aún más",
+  "summary": "Profesional con experiencia en banca y fintech, en transición activa hacia el desarrollo de software. Estudiante en Montevideo. Enfocado en C#, ASP.NET MVC, SQL, análisis de datos y tecnologías web, con ganas de construir productos con oficio, no páginas genéricas.",
   "skills": [
     "C#",
     "ASP.NET MVC",
     "SQL",
-    "Data Analysis",
-    "Web technologies"
+    "Análisis de datos",
+    "Tecnologías web",
+    "TypeScript",
+    "APIs REST"
   ],
   "socials": {
     "github": "https://github.com/leandmartine",
@@ -20,7 +22,7 @@
     {
       "institution": "Universidad ORT Uruguay",
       "focus": "Formación en software / IT",
-      "notes": "Completar fechas y carrera exacta cuando se confirmen."
+      "notes": "Estudiante en formación continua."
     }
   ],
   "experience": [
@@ -28,17 +30,17 @@
       "organization": "Mercado Libre",
       "role": "FP ATO FINTECH REP",
       "highlights": [
-        "Experiencia en entorno fintech de alta escala."
+        "Entorno fintech de alta escala y ritmo de producto real."
       ],
-      "notes": "Expandir responsabilidades y fechas desde LinkedIn en una PR de contenido."
+      "notes": ""
     },
     {
-      "organization": "Banca / Fintech (trayectoria previa)",
+      "organization": "Banca y fintech",
       "role": "Roles en industria financiera",
       "highlights": [
-        "Base de negocio y operaciones antes / en paralelo a la transición a software."
+        "Base de negocio, operaciones y datos antes y en paralelo a la transición a software."
       ],
-      "notes": "Detalle por empleador pendiente de completar."
+      "notes": ""
     }
   ],
   "characterArt": {
@@ -52,6 +54,6 @@
   "source": {
     "linkedin": "https://www.linkedin.com/in/leandmartine/",
     "userConfirmed": "2026-07-17",
-    "disclaimer": "Perfil base desde LinkedIn público + datos confirmados por Leandro. Completar timeline laboral fino en PRs de contenido."
+    "disclaimer": "Perfil base desde LinkedIn público y datos confirmados por Leandro."
   }
 }

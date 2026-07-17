@@ -119,10 +119,18 @@
   font-style: italic;
 }
 
+.shell__name {
+  margin: 1.1rem 0 0;
+  font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(247, 242, 233, 0.92);
+}
+
 .shell__subtitle {
-  margin: 1.35rem 0 0;
-  font-size: clamp(1.02rem, 2.5vw, 1.25rem);
-  color: rgba(247, 242, 233, 0.78);
+  margin: 0.45rem 0 0;
+  font-size: clamp(0.98rem, 2.2vw, 1.15rem);
+  color: rgba(247, 242, 233, 0.72);
   max-width: 28rem;
   line-height: 1.45;
 }

@@ -30,12 +30,14 @@ export class CompassHud {
     this.root.className = 'compass';
     this.root.innerHTML = `
       <p class="compass__progress" data-progress>0 / 0 explorados</p>
-      <div class="compass__ring" aria-hidden="true"></div>
-      <div class="compass__disc" data-disc>
-        <span class="compass__n">N</span>
-        <span class="compass__player" title="Vos"></span>
+      <div class="compass__dial">
+        <div class="compass__ring" aria-hidden="true"></div>
+        <div class="compass__disc" data-disc>
+          <span class="compass__n">N</span>
+          <span class="compass__player" title="Vos"></span>
+        </div>
+        <div class="compass__bearing" data-bearing></div>
       </div>
-      <div class="compass__bearing" data-bearing></div>
       <p class="compass__label" data-label>Tocá un punto para marcar rumbo</p>
     `;
     host.append(this.root);
