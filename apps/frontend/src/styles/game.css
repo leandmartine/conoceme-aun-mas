@@ -131,6 +131,55 @@
   font-size: 1.05rem;
 }
 
+/* Fixed development warning toast */
+.game-dev-banner {
+  position: absolute;
+  top: max(3.4rem, calc(env(safe-area-inset-top) + 3.1rem));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: min(520px, calc(100% - 1.5rem));
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(244, 196, 48, 0.65);
+  background: linear-gradient(
+    180deg,
+    rgba(244, 196, 48, 0.95),
+    rgba(230, 170, 40, 0.92)
+  );
+  color: #1a1408;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  pointer-events: none;
+  user-select: none;
+}
+
+.game-dev-banner__icon {
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.game-dev-banner__text {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.game-dev-banner__text strong {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  margin-right: 0.25rem;
+}
+
 /* Top bar DOM */
 .game-topbar {
   position: absolute;
@@ -212,6 +261,16 @@
 @media (max-width: 640px) {
   .game-topbar__hint {
     display: none;
+  }
+
+  .game-dev-banner {
+    top: max(3.2rem, calc(env(safe-area-inset-top) + 2.9rem));
+    width: min(100% - 1rem, 100%);
+    padding: 0.55rem 0.75rem;
+  }
+
+  .game-dev-banner__text {
+    font-size: 0.75rem;
   }
 }
 
