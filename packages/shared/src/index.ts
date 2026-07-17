@@ -27,25 +27,37 @@ export interface SocialLinks {
 
 export interface ProfileDto {
   name: string;
+  displayName?: string;
   headline: string;
   location: string;
+  phone?: string;
   tagline: string;
   summary: string;
   skills: string[];
+  languages?: Array<{ name: string; level: string }>;
   socials: SocialLinks;
   education: Array<{
     institution: string;
     focus?: string;
+    status?: string;
+    year?: string;
     notes?: string;
   }>;
   experience: Array<{
     organization: string;
     role: string;
+    period?: string;
     highlights: string[];
     notes?: string;
   }>;
+  photo?: {
+    url: string;
+    alt?: string;
+  };
   characterArt: {
     inspiredBy: string;
+    photoUrl?: string;
+    styledPortraitUrl?: string;
     notIdentical: boolean;
     build: string;
     skin: string;

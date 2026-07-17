@@ -22,12 +22,15 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   root.replaceChildren();
 
   const p = model.profile;
-  const name = p?.name ?? 'Leandro Emanuel Martinez';
-  const headline = p?.headline ?? 'Aspiring Software Developer · estudiante';
+  const name = p?.displayName ?? p?.name ?? 'Leandro E. Martinez';
+  const headline = p?.headline ?? 'Futuro Analista TI · Aspiring Software Developer';
   const location = p?.location ?? 'Montevideo, Uruguay';
   const summary =
     p?.summary ??
     'Profesional con experiencia en banca y fintech, en transición hacia el desarrollo de software.';
+  const photoUrl =
+    p?.photo?.url ?? p?.characterArt?.photoUrl ?? '/media/leandro.jpg';
+  const photoAlt = p?.photo?.alt ?? `Foto de ${name}`;
   const canEnter = Boolean(model.apiOk && model.places && model.onEnterWorld);
 
   const shell = el('div', { className: 'shell' });
@@ -110,26 +113,27 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
           <p>${escapeHtml(summary)}</p>
         </article>
         <article class="shell__story-panel shell__story-panel--fintech">
-          <p class="shell__eyebrow">Capítulo 02 · Fintech</p>
+          <p class="shell__eyebrow">Capítulo 02 · Fintech y banca</p>
           <h2>Primero el negocio, después el código</h2>
-          <p>Trabajé en contextos de <strong>banca y fintech</strong>, incluido <strong>Mercado Libre</strong> como <strong>FP ATO FINTECH REP</strong>: escala, operaciones y la disciplina de no romper lo que mueve plata.</p>
+          <p>En <strong>Mercado Libre</strong> trabajo en <strong>Prevención de Fraude — ATO</strong> (desde mar 2024): detección de vulneraciones de cuentas y estrategias contra ataques cibernéticos. Antes: <strong>Scotiabank</strong> (atención y fraudes con tarjeta), <strong>INE</strong> (datos del censo) y pasantía en <strong>Santander</strong>.</p>
           <ul class="shell__story-tags">
             <li>Mercado Libre</li>
-            <li>Fintech</li>
-            <li>Operaciones</li>
-            <li>Datos</li>
+            <li>Scotiabank</li>
+            <li>INE</li>
+            <li>Santander</li>
+            <li>Fraude / ATO</li>
           </ul>
         </article>
         <article class="shell__story-panel shell__story-panel--code">
-          <p class="shell__eyebrow">Capítulo 03 · Software</p>
-          <h2>Transición con oficio</h2>
-          <p>Hoy construyo con <strong>C#</strong>, <strong>ASP.NET MVC</strong>, <strong>SQL</strong>, análisis de datos y web. Estudiante en <strong>Universidad ORT Uruguay</strong>. Quiero laburo junior o trainee donde pueda crecer haciendo productos reales.</p>
+          <p class="shell__eyebrow">Capítulo 03 · Tecnología</p>
+          <h2>Analista TI en camino</h2>
+          <p>Estudio <strong>Analista en Tecnologías de la Información en ORT</strong>. Herramientas: HTML, CSS, JS, SQL, C#, Bootstrap, Tailwind, AWS y Azure. Busco crecer en equipos dinámicos vinculados a la tecnología y la excelencia laboral.</p>
           <ul class="shell__story-tags">
-            <li>C#</li>
-            <li>ASP.NET MVC</li>
+            <li>HTML / CSS / JS</li>
             <li>SQL</li>
-            <li>TypeScript</li>
-            <li>APIs REST</li>
+            <li>C#</li>
+            <li>ORT</li>
+            <li>AWS · Azure</li>
           </ul>
         </article>
         <article class="shell__story-panel shell__story-panel--world">
@@ -149,9 +153,9 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   identity.innerHTML = `
     <div class="shell__identity-grid">
       <div class="shell__portrait" data-reveal>
-        <div class="shell__portrait-frame">
-          <div class="shell__portrait-silhouette" aria-hidden="true"></div>
-          <p class="shell__portrait-caption">Personaje del juego · inspirado en mí</p>
+        <div class="shell__portrait-frame shell__portrait-frame--photo">
+          <img class="shell__portrait-photo" src="${escapeHtml(photoUrl)}" alt="${escapeHtml(photoAlt)}" width="461" height="615" loading="lazy" />
+          <p class="shell__portrait-caption">Foto real · del CV</p>
         </div>
       </div>
       <div class="shell__identity-copy">
@@ -163,35 +167,36 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     </div>
   `;
 
-  // ——— TIMELINE ———
+  // ——— TIMELINE (from profile experience when available) ———
   const path = el('section', { className: 'shell__path', id: 'camino' });
   path.setAttribute('data-chapter', '');
   const pathInner = el('div', { className: 'shell__path-inner' });
   pathInner.append(
     el('p', { className: 'shell__eyebrow', text: 'El camino' }),
-    el('h2', { className: 'shell__chapter-title', text: 'De fintech a software' }),
+    el('h2', { className: 'shell__chapter-title', text: 'Experiencia real' }),
   );
   pathInner.querySelectorAll('p, h2').forEach((n) => n.setAttribute('data-reveal', ''));
 
   const timeline = el('ol', { className: 'shell__timeline' });
-  const steps = [
-    {
-      t: 'Banca y fintech',
-      d: 'Operaciones, procesos y datos en industria financiera. Aprendí el peso de un sistema que no puede fallar.',
-    },
-    {
-      t: 'Mercado Libre',
-      d: 'FP ATO FINTECH REP. Escala real, ritmo de producto y entorno fintech de alto tráfico.',
-    },
-    {
-      t: 'Universidad ORT Uruguay',
-      d: 'Estudiante enfocado en software e IT. Aplicar teoría a problemas de negocio y producto.',
-    },
-    {
-      t: 'Desarrollo de software',
-      d: 'C#, ASP.NET MVC, SQL, web y APIs. Construyendo este portfolio-juego y buscando el próximo laburo junior.',
-    },
-  ];
+  const steps =
+    p?.experience?.map((exp) => ({
+      t: `${exp.organization}${exp.period ? ` · ${exp.period}` : ''}`,
+      d: [exp.role, ...(exp.highlights ?? [])].filter(Boolean).join(' '),
+    })) ?? [];
+  if (steps.length === 0) {
+    steps.push({
+      t: 'Mercado Libre · Mar 2024 – Actual',
+      d: 'Prevención de Fraude — ATO. Detección de vulneraciones y protección de datos de usuarios.',
+    });
+  }
+  // education foot
+  const edu = p?.education?.[0];
+  if (edu) {
+    steps.push({
+      t: `${edu.institution}${edu.status ? ` · ${edu.status}` : ''}`,
+      d: edu.focus ?? 'Formación en tecnologías de la información.',
+    });
+  }
   for (const step of steps) {
     const li = el('li', { className: 'shell__timeline-item' });
     li.setAttribute('data-card', '');
@@ -216,11 +221,31 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   skills.setAttribute('data-reveal', '');
   const skillList = p?.skills?.length
     ? p.skills
-    : ['C#', 'ASP.NET MVC', 'SQL', 'Análisis de datos', 'Web', 'TypeScript'];
+    : ['HTML', 'CSS', 'JavaScript', 'SQL', 'C#', 'Bootstrap', 'Tailwind'];
   for (const skill of skillList) {
     skills.append(el('li', { className: 'shell__skill', text: skill }));
   }
   skillsSec.append(skills);
+
+  if (p?.languages?.length) {
+    const langTitle = el('p', {
+      className: 'shell__eyebrow',
+      text: 'Idiomas',
+    });
+    langTitle.setAttribute('data-reveal', '');
+    langTitle.style.marginTop = '1.75rem';
+    const langs = el('ul', { className: 'shell__skills' });
+    langs.setAttribute('data-reveal', '');
+    for (const lang of p.languages) {
+      langs.append(
+        el('li', {
+          className: 'shell__skill',
+          text: `${lang.name} · ${lang.level}`,
+        }),
+      );
+    }
+    skillsSec.append(langTitle, langs);
+  }
 
   // ——— MAP PLACES ———
   const mapChapter = el('section', {
@@ -285,6 +310,10 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   if (socials?.linkedin) links.append(link(socials.linkedin, 'LinkedIn'));
   if (socials?.email) links.append(link(`mailto:${socials.email}`, 'Email'));
   else links.append(link('mailto:leandromartinez38@gmail.com', 'Email'));
+  if (p?.phone) {
+    const tel = p.phone.replace(/\s/g, '');
+    links.append(link(`tel:${tel}`, p.phone));
+  }
 
   const finaleCta = el('button', {
     className: 'shell__cta',
