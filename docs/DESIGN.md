@@ -331,7 +331,8 @@ Each PR is independently reviewable and mergeable. **No direct commits to `main`
 
 | # | PR title | Scope | Depends on |
 |---|----------|--------|------------|
-| **0** | `docs: foundation design & collaboration rules` | DESIGN, PROYECTO, AGENTS, CONTRIBUTING, PR template | — |
+| **0** | `docs: foundation design & collaboration rules` | DESIGN, PROYECTO, AGENTS, CONTRIBUTING, PR template | — ✅ |
+| **0b** | `docs: world map + status` | WORLD_MAP.md, PROYECTO status | 0 |
 | **1** | `chore: scaffold Vite + TS + base tooling` | package.json, eslint, prettier, tsconfig, empty app boot | 0 |
 | **2** | `feat(shell): cinematic title + Lenis/GSAP intro` | Layer A scroll experience, “Entrar al mundo” CTA | 1 |
 | **3** | `feat(game): Phaser boot + player movement top-down` | WorldScene, keyboard + mobile joystick, camera follow | 1 |

@@ -26,6 +26,7 @@ Content is data-driven and filled **progressively**.
 | Doc | Purpose |
 |-----|---------|
 | [`docs/DESIGN.md`](./docs/DESIGN.md) | **Source of truth** — vision, stack, world, PR plan |
+| [`docs/WORLD_MAP.md`](./docs/WORLD_MAP.md) | Zone layout Uruguay → portfolio chapters |
 | [`PROYECTO.md`](./PROYECTO.md) | Living status board |
 | [`AGENTS.md`](./AGENTS.md) | Human + AI collaboration contract |
 | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | PR workflow |
