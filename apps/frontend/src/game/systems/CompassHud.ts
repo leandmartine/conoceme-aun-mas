@@ -51,8 +51,8 @@ export class CompassHud {
       m.type = 'button';
       m.className = 'compass__marker';
       m.dataset.id = poi.id;
-      m.textContent = poi.compassLabel.slice(0, 3);
-      m.title = poi.title;
+      m.textContent = poi.compassLabel.slice(0, 4);
+      m.title = `${poi.title} — ${poi.subtitle}`;
       m.addEventListener('click', () => {
         this.focusedId = this.focusedId === poi.id ? null : poi.id;
         this.onFocus?.(this.focusedId);
@@ -60,7 +60,7 @@ export class CompassHud {
           el.classList.toggle('compass__marker--focus', id === this.focusedId);
         });
         this.labelEl.textContent = this.focusedId
-          ? `Rumbo: ${poi.title}`
+          ? `Rumbo: ${poi.title} — ${poi.subtitle}`
           : 'Tocá un punto para marcar rumbo';
       });
       this.disc.append(m);

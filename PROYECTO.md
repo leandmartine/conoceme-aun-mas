@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Mundo Phaser jugable + brújula — art pass next |
+| **Status** | 🟡 Mapa Uruguay legible + labels de capítulo — art sprites next |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -19,6 +19,12 @@
 ---
 
 ## Changelog
+
+### 2026-07-17 — Uruguay map readability
+
+- Labels: `Lugar — de qué se trata` (ej. La Rambla — Quién soy).  
+- Mapa redibujado: río, rambla, ciudad, puerto, campo, faro, rutas.  
+- Sin grilla de “pixeles”; biomas anclados a los POIs.
 
 ### 2026-07-17 — Game player + compass
 
