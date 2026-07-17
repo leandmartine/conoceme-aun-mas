@@ -37,17 +37,37 @@ Todo el contenido del mapa está **disponible desde el inicio**: el visitante el
 
 ---
 
-## Estructura (objetivo)
+## Estructura
 
 ```text
 apps/
-  frontend/     # shell + juego (cliente)
-  backend/      # API REST
+  frontend/     # shell + juego (cliente) — Vite
+  backend/      # API REST — Hono + SOLID
 packages/
   shared/       # tipos y contratos compartidos
 content/        # datos de portfolio (fuente de verdad editorial)
 docs/
 ```
+
+## Desarrollo local
+
+```bash
+npm install
+
+# terminal 1
+npm run dev:backend    # http://localhost:8787
+
+# terminal 2
+npm run dev:frontend   # http://localhost:5173  (proxy /api → backend)
+```
+
+API útil:
+
+- `GET /api/v1/health`
+- `GET /api/v1/profile`
+- `GET /api/v1/places`
+- `GET /api/v1/places/:id`
+- `GET|PUT /api/v1/player/state`
 
 ---
 

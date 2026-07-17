@@ -1,0 +1,46 @@
+:root {
+  --uy-sky: #7eb6d9;
+  --uy-water: #1b4f72;
+  --uy-sand: #e8d5b5;
+  --uy-grass: #4a7c59;
+  --uy-sun: #f4c430;
+  --uy-night: #0b1220;
+  --uy-cream: #f7f2e9;
+  --uy-coral: #e07a5f;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--uy-night);
+  color: var(--uy-cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+#app {
+  min-height: 100dvh;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--uy-sky);
+}

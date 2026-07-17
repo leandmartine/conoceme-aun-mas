@@ -22,5 +22,20 @@ jobs:
           test -f AGENTS.md
           test -f content/profile.json
           test -f content/places.index.json
-          test -f content/places/rambla.md
           echo "Foundation docs + content OK"
+
+  typecheck:
+    name: Install, build, typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Typecheck workspaces
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
