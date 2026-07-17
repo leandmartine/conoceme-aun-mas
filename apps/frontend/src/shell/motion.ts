@@ -95,20 +95,6 @@ export function bindShellMotion(root: HTMLElement): MotionHandle {
       });
     }
 
-    // Marquee is CSS-driven; gentle opacity on enter
-    const marquee = root.querySelector('.shell__marquee-wrap');
-    if (marquee) {
-      gsap.fromTo(
-        marquee,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 1,
-          scrollTrigger: { trigger: marquee, start: 'top 90%' },
-        },
-      );
-    }
-
     root.querySelectorAll<HTMLElement>('[data-chapter]').forEach((chapter) => {
       gsap.fromTo(
         chapter.querySelectorAll('[data-reveal]'),

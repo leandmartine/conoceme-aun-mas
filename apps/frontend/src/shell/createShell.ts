@@ -109,14 +109,14 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   hero.append(kicker, title, subtitle, ctaRow, apiStatus, scrollHint);
   stage.append(stageBg, stageGlow, stageOrb, hero);
 
-  // ——— LOOP REELS (interactive “videos”) ———
-  const reels = el('section', { className: 'shell__reels', id: 'reels' });
+  // ——— Feature cards (visual motion, no “loop” framing) ———
+  const reels = el('section', { className: 'shell__reels', id: 'experiencia' });
   reels.setAttribute('data-chapter', '');
   reels.append(
-    el('p', { className: 'shell__eyebrow', text: 'Loops en vivo' }),
+    el('p', { className: 'shell__eyebrow', text: 'La experiencia' }),
     el('h2', {
       className: 'shell__chapter-title',
-      text: 'No es un scroll muerto',
+      text: 'Más que un portfolio en lista',
     }),
   );
   reels.querySelectorAll('p, h2').forEach((n) => n.setAttribute('data-reveal', ''));
@@ -128,7 +128,6 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     card.tabIndex = 0;
 
     const screen = el('div', { className: 'shell__reel-screen', ariaHidden: 'true' });
-    // looping fake UI layers
     screen.innerHTML = `
       <div class="shell__reel-loop">
         <div class="shell__reel-layer shell__reel-layer--a"></div>
@@ -136,7 +135,6 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
         <div class="shell__reel-layer shell__reel-layer--c"></div>
         <div class="shell__reel-scan"></div>
       </div>
-      <span class="shell__reel-badge">LOOP</span>
     `;
 
     const copy = el('div', { className: 'shell__reel-copy' });
@@ -145,7 +143,6 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
       el('p', { className: 'shell__reel-body', text: reel.body }),
     );
 
-    // Interactive: tilt on hover
     card.addEventListener('pointermove', (e) => {
       const r = card.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
@@ -164,19 +161,6 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
     reelsGrid.append(card);
   }
   reels.append(reelsGrid);
-
-  // ——— Marquee of places ———
-  const marquee = el('section', { className: 'shell__marquee-wrap', ariaHidden: 'true' });
-  const track = el('div', { className: 'shell__marquee' });
-  const labels =
-    model.places?.places.map((p) => `${p.title} — ${p.subtitle ?? p.chapter}`) ??
-    ['La Rambla — Quién soy', 'Ciudad Vieja — Experiencia', 'Puerto — GitHub', 'Faro — Contacto'];
-  const doubled = [...labels, ...labels, ...labels];
-  for (const text of doubled) {
-    const item = el('span', { className: 'shell__marquee-item', text });
-    track.append(item);
-  }
-  marquee.append(track);
 
   // ——— Mood chapter ———
   const mood = el('section', { className: 'shell__chapter shell__chapter--mood' });
@@ -312,7 +296,7 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
 
   finale.append(finaleTitle, finaleBody, finaleCta, finaleStatus);
 
-  shell.append(grain, stage, reels, marquee, mood, mapChapter, about, finale);
+  shell.append(grain, stage, reels, mood, mapChapter, about, finale);
   root.append(shell);
 
   requestAnimationFrame(() => {
