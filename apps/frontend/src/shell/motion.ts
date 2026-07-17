@@ -163,11 +163,26 @@ export function bindShellMotion(root: HTMLElement): MotionHandle {
   return {
     lenis,
     destroy: () => {
-      ctx.revert();
+      try {
+        ctx.revert();
+      } catch {
+        /* ignore */
+      }
       gsap.ticker.remove(ticker);
-      lenis.destroy();
+      try {
+        lenis.destroy();
+      } catch {
+        /* ignore */
+      }
       ScrollTrigger.getAll().forEach((t) => t.kill());
+      ScrollTrigger.clearScrollMemory?.();
       document.documentElement.classList.remove('lenis');
+      // Undo pin spacers / body locks GSAP may leave behind
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('height');
+      document.body.style.removeProperty('width');
+      document.body.style.removeProperty('padding-right');
+      document.documentElement.style.removeProperty('overflow');
     },
   };
 }

@@ -14,11 +14,16 @@ export interface ShellModel {
 let motion: MotionHandle | null = null;
 let stopCanvas: (() => void) | null = null;
 
-export function createShell(root: HTMLElement, model: ShellModel): void {
+/** Stop Lenis/GSAP while the game is open (shell stays in DOM but hidden). */
+export function pauseShellMotion(): void {
   motion?.destroy();
   motion = null;
   stopCanvas?.();
   stopCanvas = null;
+}
+
+export function createShell(root: HTMLElement, model: ShellModel): void {
+  pauseShellMotion();
   root.replaceChildren();
 
   const p = model.profile;
