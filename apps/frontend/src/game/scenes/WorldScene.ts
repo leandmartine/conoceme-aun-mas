@@ -83,7 +83,8 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
-    this.cameras.main.setBackgroundColor('#4f7a58');
+    // Match land so no green “mystery strip” peeks under/around the world
+    this.cameras.main.setBackgroundColor('#0f3550');
 
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.wasd = {
@@ -341,34 +342,20 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private addAmbientFx(): void {
-    // Soft dust / pollen over campo-ish green
+    // Light inland dust only (avoid sparkle band that looked like a mystery UI strip)
     const dust = this.add.particles(0, 0, 'poi', {
-      x: { min: 0, max: WORLD_SIZE },
-      y: { min: 0, max: WORLD_SIZE * 0.55 },
-      scale: { start: 0.08, end: 0 },
-      alpha: { start: 0.25, end: 0 },
-      speedY: { min: -8, max: -20 },
-      speedX: { min: -10, max: 10 },
-      lifespan: 4000,
-      frequency: 200,
+      x: { min: 80, max: WORLD_SIZE - 80 },
+      y: { min: 80, max: WORLD_SIZE * 0.5 },
+      scale: { start: 0.06, end: 0 },
+      alpha: { start: 0.18, end: 0 },
+      speedY: { min: -6, max: -14 },
+      speedX: { min: -8, max: 8 },
+      lifespan: 3500,
+      frequency: 320,
       blendMode: 'ADD',
       tint: 0xf4c430,
     });
-    dust.setDepth(3);
-
-    // Sparkles on southern water
-    const spark = this.add.particles(0, 0, 'poi', {
-      x: { min: 0, max: WORLD_SIZE },
-      y: { min: WORLD_SIZE * 0.7, max: WORLD_SIZE },
-      scale: { start: 0.12, end: 0 },
-      alpha: { start: 0.35, end: 0 },
-      speed: { min: 4, max: 16 },
-      lifespan: 2500,
-      frequency: 280,
-      blendMode: 'ADD',
-      tint: 0x7eb6d9,
-    });
-    spark.setDepth(2);
+    dust.setDepth(4);
   }
 
   private updateNearest(): void {

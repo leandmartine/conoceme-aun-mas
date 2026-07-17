@@ -4,9 +4,8 @@ import { drawDistricts } from './drawDistricts';
 import { drawWindingRoads } from './drawRoads';
 
 /**
- * Compact coastal Uruguay:
- * south = Río + Rambla · west bay = Puerto · east point = Faro
- * center = ciudad · north = campus + campo (not water).
+ * Layer order (no overlapping water textures):
+ * 0 land · 1 ocean (single sheet, clipped to world) · 2 roads · 3 districts
  */
 export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
   const W = WORLD_SIZE;
@@ -16,71 +15,67 @@ export function drawUruguayMap(scene: Phaser.Scene, pois: WorldPoi[]): void {
   >;
 
   const rambla = byId.rambla;
-  const puerto = byId.puerto;
-  const faro = byId.faro;
   const ciudad = byId['ciudad-vieja'];
   const skyline = byId.skyline;
 
-  // —— Land base (inland green, not full-map water chaos) ——
+  // Coast line: just south of rambla promenade (clamped)
+  const coastY = Phaser.Math.Clamp(
+    rambla ? rambla.y + 48 : H * 0.72,
+    H * 0.55,
+    H - 80,
+  );
+  const waterH = H - coastY;
+
+  // —— 0: Land (full world grass; ocean covers south) ——
   const grass = scene.add.tileSprite(W / 2, H / 2, W, H, 'tex-grass').setDepth(0);
   grass.setTint(0xc5ddb8);
 
-  const g = scene.add.graphics().setDepth(1);
+  const land = scene.add.graphics().setDepth(0.2);
+  land.fillStyle(0x9ec4dc, 0.1);
+  land.fillRect(0, 0, W, H * 0.2);
 
-  // Soft northern “horizon” haze
-  g.fillStyle(0x9ec4dc, 0.12);
-  g.fillRect(0, 0, W, H * 0.22);
-
-  // Urban land plate under city cluster
   if (ciudad && skyline) {
     const midX = (ciudad.x + skyline.x) / 2;
     const midY = (ciudad.y + skyline.y) / 2;
-    g.fillStyle(0x8b919a, 0.35);
-    g.fillRoundedRect(midX - 260, midY - 150, 520, 300, 28);
+    land.fillStyle(0x8b919a, 0.3);
+    land.fillRoundedRect(midX - 260, midY - 150, 520, 300, 28);
   }
 
-  // —— Río de la Plata (south continuous coast) ——
-  const waterTop = rambla ? rambla.y + 36 : H * 0.72;
-  const river = scene.add
-    .tileSprite(W / 2, waterTop + (H - waterTop) / 2, W, H - waterTop + 40, 'tex-water')
-    .setDepth(0.4);
+  // —— 1: ONE ocean tileSprite, exactly to world bottom (no overflow) ——
+  const ocean = scene.add
+    .tileSprite(W / 2, coastY + waterH / 2, W, waterH, 'tex-water')
+    .setDepth(1)
+    .setOrigin(0.5, 0.5);
   scene.tweens.add({
-    targets: river,
-    tilePositionX: 100,
-    duration: 16000,
+    targets: ocean,
+    tilePositionX: 80,
+    duration: 18000,
     repeat: -1,
     ease: 'Linear',
   });
-  // darker offshore
-  g.fillStyle(0x0f3550, 0.25);
-  g.fillRect(0, waterTop + 80, W, H - waterTop);
 
-  // West bay bite for Puerto (water must connect to river)
-  if (puerto) {
-    g.fillStyle(0x1b4f72, 0.55);
-    g.fillEllipse(puerto.x - 10, Math.max(puerto.y, waterTop - 10), 280, 200);
-  }
+  // Soft deeper water tint (same layer family, graphics only — no 2nd texture)
+  const waterFx = scene.add.graphics().setDepth(1.1);
+  waterFx.fillStyle(0x0a2a42, 0.22);
+  waterFx.fillRect(0, coastY + waterH * 0.45, W, waterH * 0.55);
+  // foam line at coast
+  waterFx.fillStyle(0xf7f2e9, 0.12);
+  waterFx.fillRect(0, coastY, W, 6);
 
-  // East cove for Faro
-  if (faro) {
-    g.fillStyle(0x1b4f72, 0.5);
-    g.fillEllipse(faro.x + 30, Math.max(faro.y + 20, waterTop - 5), 240, 180);
-  }
+  // —— 2: Roads on land (above ocean so bridges/quays read, but drawn before props) ——
+  const roads = scene.add.graphics().setDepth(2);
+  drawWindingRoads(roads, pois);
 
-  // —— Roads first (under buildings slightly / with districts) ——
-  // draw roads at depth via graphics before heavy props
-  drawWindingRoads(g, pois);
+  // —— 3: Districts (no extra water tileSprites) ——
+  const props = scene.add.graphics().setDepth(3);
+  drawDistricts(scene, props, pois, coastY);
 
-  // —— Dense districts ——
-  drawDistricts(scene, g, pois);
-
-  // Soft zone rings (subtle)
+  // —— 4: Soft zone rings only ——
+  const rings = scene.add.graphics().setDepth(3.5);
   for (const poi of pois) {
-    g.lineStyle(2, poi.color, 0.28);
-    g.strokeCircle(poi.x, poi.y, 72);
+    rings.lineStyle(2, poi.color, 0.22);
+    rings.strokeCircle(poi.x, poi.y, 68);
   }
 
-  // Edge vignette
-  g.lineStyle(70, 0x1a3040, 0.1);
-  g.strokeRect(40, 40, W - 80, H - 80);
+  // NO world-edge vignette (it looked like a “border in the wrong place”)
 }

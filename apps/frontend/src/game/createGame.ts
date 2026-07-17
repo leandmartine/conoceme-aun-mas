@@ -33,7 +33,7 @@ export function createGame(options: {
     parent: options.parent,
     width: window.innerWidth,
     height: window.innerHeight,
-    backgroundColor: '#0b1220',
+    backgroundColor: '#0f3550',
     physics: {
       default: 'arcade',
       arcade: {
