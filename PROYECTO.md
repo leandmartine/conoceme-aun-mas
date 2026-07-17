@@ -13,7 +13,7 @@
 
 ## Current focus
 
-1. Merge de la PR de arquitectura/perfil/AI/README.  
+1. Merge de la PR de arquitectura/perfil/AI/README (resolver conflictos con main).  
 2. Siguiente: monorepo scaffold `apps/frontend` + `apps/backend` + `packages/shared`.
 
 ---
@@ -31,9 +31,15 @@
 - README limpio (sin sección de colaboración externa).  
 - Workflow agent: avisar PR lista; no commitear sobre PRs ya abiertas/listas.
 
+### 2026-07-17 — World map
+
+- Added `docs/WORLD_MAP.md` (zone layout, spawn, priorities).  
+- Foundation + world map en `main` vía PR #1.
+
 ### 2026-07-17 — Foundation
 
-- Visión inicial, stack de juego, Uruguay map concept.
+- Visión inicial, stack de juego, Uruguay map concept.  
+- Public repo: https://github.com/leandmartine/conoceme-aun-mas
 
 ---
 
@@ -54,8 +60,9 @@
 
 | PR | State |
 |----|-------|
-| Foundation | ✅ en main (parcial) |
-| docs: architecture + profile + AI + compass | 🔵 avisar cuando lista |
+| Foundation | ✅ en main |
+| docs: world map (#1) | ✅ merged |
+| docs: architecture + profile + AI + compass (#2) | 🔵 conflictos resueltos — lista para merge |
 | chore: monorepo scaffold | ⬜ |
 | feat(api): profile + places | ⬜ |
 | feat(shell): intro | ⬜ |
