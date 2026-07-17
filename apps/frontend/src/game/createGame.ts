@@ -12,7 +12,7 @@ export function createGame(options: {
   parent: HTMLElement;
   hudHost: HTMLElement;
   places: PlacesIndexDto;
-  onExit: () => void;
+  onExit: () => void | Promise<void>;
 }): GameSession {
   const placePanel = new PlacePanel(options.hudHost);
 
@@ -24,7 +24,7 @@ export function createGame(options: {
     placePanel,
     onExit: () => {
       session.destroy();
-      options.onExit();
+      void options.onExit();
     },
   };
 

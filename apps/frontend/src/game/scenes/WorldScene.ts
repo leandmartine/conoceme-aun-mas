@@ -10,13 +10,14 @@ import {
   type WorldPoi,
 } from '../world/mapLayout';
 import { drawUruguayMap } from '../world/drawUruguayMap';
+import { gameAudio } from '../../audio/gameAudio';
 import type { PlacePanel } from '../../ui/placePanel';
 
 export interface WorldSceneData {
   places: PlacesIndexDto;
   hudHost: HTMLElement;
   placePanel: PlacePanel;
-  onExit?: () => void;
+  onExit?: () => void | Promise<void>;
 }
 
 const SPEED = 210;
@@ -94,6 +95,7 @@ export class WorldScene extends Phaser.Scene {
     this.compass.setPois(this.pois);
     this.compass.setFocusHandler((id) => {
       this.focusedId = id;
+      gameAudio.tick();
     });
 
     this.prompt = this.add
@@ -101,8 +103,8 @@ export class WorldScene extends Phaser.Scene {
         fontFamily: 'DM Sans, system-ui, sans-serif',
         fontSize: '14px',
         color: '#f7f2e9',
-        backgroundColor: 'rgba(11,18,32,0.75)',
-        padding: { x: 10, y: 6 },
+        backgroundColor: 'rgba(11,18,32,0.82)',
+        padding: { x: 12, y: 7 },
       })
       .setDepth(20)
       .setOrigin(0.5, 1)
@@ -115,10 +117,11 @@ export class WorldScene extends Phaser.Scene {
 
     // Mobile interact button
     const interactBtn = this.add
-      .circle(this.cameras.main.width - 72, this.cameras.main.height - 100, 34, 0xe07a5f, 0.85)
+      .circle(this.cameras.main.width - 72, this.cameras.main.height - 100, 36, 0xe07a5f, 0.9)
       .setScrollFactor(0)
       .setDepth(1000)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ useHandCursor: true })
+      .setStrokeStyle(2, 0xf7f2e9, 0.35);
     this.add
       .text(this.cameras.main.width - 72, this.cameras.main.height - 100, 'E', {
         fontFamily: 'DM Sans, system-ui',
@@ -131,35 +134,60 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(0.5);
     interactBtn.on('pointerdown', () => this.tryInteract());
 
-    const exitBtn = this.add
-      .text(16, 16, '← Salir', {
-        fontFamily: 'DM Sans, system-ui',
-        fontSize: '14px',
-        color: '#f7f2e9',
-        backgroundColor: 'rgba(11,18,32,0.55)',
-        padding: { x: 10, y: 6 },
-      })
-      .setScrollFactor(0)
-      .setDepth(1000)
-      .setInteractive({ useHandCursor: true });
-    exitBtn.on('pointerdown', () => data.onExit?.());
+    this.mountDomHud(data);
 
-    this.add
-      .text(16, 48, 'WASD / flechas · E interactuar', {
-        fontFamily: 'DM Sans, system-ui',
-        fontSize: '12px',
-        color: 'rgba(247,242,233,0.45)',
-      })
-      .setScrollFactor(0)
-      .setDepth(1000);
+    this.cameras.main.fadeIn(650, 79, 122, 88);
+  }
 
-    this.cameras.main.fadeIn(500, 11, 18, 32);
+  private mountDomHud(data: WorldSceneData): void {
+    const bar = document.createElement('div');
+    bar.className = 'game-topbar';
+    bar.innerHTML = `
+      <button type="button" class="game-topbar__btn" data-exit>← Salir</button>
+      <p class="game-topbar__hint">WASD / flechas · E interactuar · brújula abajo-derecha</p>
+      <button type="button" class="game-topbar__btn game-topbar__btn--mute" data-mute aria-label="Silenciar">
+        ${gameAudio.isMuted() ? '🔇' : '🔊'}
+      </button>
+    `;
+    this.hudHost.append(bar);
+
+    bar.querySelector('[data-exit]')?.addEventListener('click', () => {
+      void data.onExit?.();
+    });
+    const muteBtn = bar.querySelector('[data-mute]') as HTMLButtonElement | null;
+    muteBtn?.addEventListener('click', () => {
+      gameAudio.setMuted(!gameAudio.isMuted());
+      if (muteBtn) muteBtn.textContent = gameAudio.isMuted() ? '🔇' : '🔊';
+    });
+
+    // First-time coach mark
+    try {
+      if (!localStorage.getItem('conoceme-coach')) {
+        const coach = document.createElement('div');
+        coach.className = 'game-coach';
+        coach.innerHTML = `
+          <p><strong>Estás en la Rambla.</strong> Caminá hacia los totems dorados. Cada uno es un capítulo (experiencia, estudios, GitHub…).</p>
+          <button type="button" data-dismiss>Entendido</button>
+        `;
+        this.hudHost.append(coach);
+        coach.querySelector('[data-dismiss]')?.addEventListener('click', () => {
+          coach.remove();
+          localStorage.setItem('conoceme-coach', '1');
+          gameAudio.tick();
+        });
+      }
+    } catch {
+      /* ignore */
+    }
   }
 
   override update(): void {
     if (!this.player?.body) return;
     if (this.placePanel.isOpen) {
       this.player.setVelocity(0, 0);
+      this.playerShadow?.setPosition(this.player.x, this.player.y + 30);
+      const idle = `idle-${this.facing}`;
+      if (this.player.anims.currentAnim?.key !== idle) this.player.play(idle, true);
       return;
     }
 
@@ -353,6 +381,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (this.nearest) {
+      gameAudio.discover();
       void this.placePanel.showPlace(this.nearest.id);
     }
   }
