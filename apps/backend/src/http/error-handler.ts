@@ -7,7 +7,8 @@ export const errorHandler: ErrorHandler = (err, c) => {
     const body: ApiErrorBody = {
       error: { code: err.code, message: err.message },
     };
-    return c.json(body, err.status as 400);
+    // Preserve 4xx (401, 404, 429, …)
+    return c.json(body, err.status as 400 | 401 | 404 | 429);
   }
 
   console.error('[backend] unhandled error', err);

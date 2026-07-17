@@ -156,11 +156,20 @@ Si se rechaza:
 
 ## 7. Checklist al implementar el módulo AI
 
-- [ ] Prompt y keys solo en backend  
-- [ ] Tests de jailbreak / code_request / format_escape  
-- [ ] Knowledge cargada desde `content/`  
-- [ ] Rate limit por API key  
-- [ ] Logs sin guardar mensajes sensibles de más  
-- [ ] Documentar keys de demo en `.env.example` (valores fake)  
+- [x] Prompt y keys solo en backend (`PORTFOLIO_API_KEYS`, opcional `XAI_API_KEY`)  
+- [x] Clasificador de intención (jailbreak / code_request / format_escape / off_topic)  
+- [x] Knowledge cargada desde `content/knowledge/` + `profile.json`  
+- [x] Rate limit por API key (in-memory sliding window)  
+- [x] Stub grounded (sin provider externo) — LLM opcional después  
+- [x] Documentar keys de demo en `.env.example` (valores fake)  
+- [ ] Tests automatizados de jailbreak  
+- [ ] Provider SpaceXAI / xAI cuando haya key de producción  
+
+### Endpoints
+
+| Método | Path | Auth |
+|--------|------|------|
+| GET | `/api/v1/ai/status` | No |
+| POST | `/api/v1/ai/chat` | Bearer / `X-Api-Key` |
 
 Este archivo es la **fuente de verdad del rol**. Si se ajusta el tono o las reglas, actualizar aquí y el string del system prompt en el mismo PR.

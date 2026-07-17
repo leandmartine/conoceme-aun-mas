@@ -18,6 +18,11 @@ export interface WorldSceneData {
   places: PlacesIndexDto;
   hudHost: HTMLElement;
   placePanel: PlacePanel;
+  /** Live bag for companion chat context (mutated by this scene). */
+  playerCtx?: {
+    zoneId: PlaceId | null;
+    visitedPlaceIds: PlaceId[];
+  };
   onExit?: () => void | Promise<void>;
 }
 
@@ -53,6 +58,7 @@ export class WorldScene extends Phaser.Scene {
   private sprintKey!: Phaser.Input.Keyboard.Key;
   private sprintHeld = false;
   private sprintBtn!: HTMLButtonElement | null;
+  private playerCtx: WorldSceneData['playerCtx'];
 
   constructor() {
     super('World');
@@ -63,6 +69,7 @@ export class WorldScene extends Phaser.Scene {
     this.pois = placesToPois(resolved.places.places);
     this.placePanel = resolved.placePanel;
     this.hudHost = resolved.hudHost;
+    this.playerCtx = resolved.playerCtx;
   }
 
   create(data: WorldSceneData): void {
@@ -448,6 +455,10 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.nearest = best;
+    if (this.playerCtx) {
+      this.playerCtx.zoneId = best?.id ?? this.playerCtx.zoneId;
+      this.playerCtx.visitedPlaceIds = [...this.visited];
+    }
     if (best) {
       this.prompt.setVisible(true);
       this.prompt.setPosition(this.player.x, this.player.y - 70);
