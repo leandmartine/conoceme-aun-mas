@@ -4,7 +4,7 @@
 |-------|--------|
 | **Repo** | https://github.com/leandmartine/conoceme-aun-mas (público, showcase) |
 | **Owner** | Leandro Emanuel Martinez (mergea siempre) |
-| **Status** | 🟡 Mapa Uruguay legible + labels de capítulo — art sprites next |
+| **Status** | 🟡 Art pass personaje + texturas — polish UI next |
 | **Stack** | FE: Vite·TS · BE: Hono·TS·REST · shared types · (Phaser/GSAP next) |
 | **Art** | Híbrido moderno · top-down · minimapa brújula |
 | **Progression** | Todo desbloqueado desde el inicio |
@@ -19,6 +19,12 @@
 ---
 
 ## Changelog
+
+### 2026-07-17 — Art: character + terrain textures
+
+- Personaje con sheet 4 dir + walk/idle (alto, café con leche, pelo negro).  
+- Texturas canvas: pasto, arena, agua, adoquín.  
+- Iconos por landmark; partículas ambiente; sombra que sigue al player.
 
 ### 2026-07-17 — Uruguay map readability
 
