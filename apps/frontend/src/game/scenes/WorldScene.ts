@@ -3,11 +3,13 @@ import type { PlaceId, PlacesIndexDto } from '@conoceme/shared';
 import { CompassHud } from '../systems/CompassHud';
 import { VirtualJoystick } from '../systems/VirtualJoystick';
 import {
+  labelForPoi,
   placesToPois,
   spawnFromPlaces,
   WORLD_SIZE,
   type WorldPoi,
 } from '../world/mapLayout';
+import { drawUruguayMap } from '../world/drawUruguayMap';
 import type { PlacePanel } from '../../ui/placePanel';
 
 export interface WorldSceneData {
@@ -71,7 +73,7 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, WORLD_SIZE, WORLD_SIZE);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
-    this.cameras.main.setBackgroundColor('#0b1220');
+    this.cameras.main.setBackgroundColor('#4f7a58');
 
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.wasd = {
@@ -221,43 +223,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private drawWorld(): void {
-    const g = this.add.graphics();
-    // Base ground — coastal night-day hybrid
-    g.fillStyle(0x1a2f28, 1);
-    g.fillRect(0, 0, WORLD_SIZE, WORLD_SIZE);
-
-    // Water band (south / rambla)
-    g.fillStyle(0x1b4f72, 1);
-    g.fillRect(0, WORLD_SIZE * 0.62, WORLD_SIZE, WORLD_SIZE * 0.4);
-    g.fillStyle(0x163d5c, 0.5);
-    g.fillRect(0, WORLD_SIZE * 0.58, WORLD_SIZE, 40);
-
-    // Sand strip
-    g.fillStyle(0xe8d5b5, 0.35);
-    g.fillRect(0, WORLD_SIZE * 0.56, WORLD_SIZE, 50);
-
-    // Soft grid paths
-    g.lineStyle(2, 0xf7f2e9, 0.04);
-    for (let i = 0; i < WORLD_SIZE; i += 80) {
-      g.lineBetween(i, 0, i, WORLD_SIZE);
-      g.lineBetween(0, i, WORLD_SIZE, i);
-    }
-
-    // Zone blobs under each POI
-    for (const poi of this.pois) {
-      g.fillStyle(poi.color, 0.22);
-      g.fillCircle(poi.x, poi.y, 110);
-      g.lineStyle(2, poi.color, 0.35);
-      g.strokeCircle(poi.x, poi.y, 110);
-    }
-
-    // Decorative "city blocks" north-center
-    g.fillStyle(0x2a3a4e, 0.5);
-    for (let i = 0; i < 18; i++) {
-      const bx = WORLD_SIZE * 0.35 + (i % 6) * 70;
-      const by = WORLD_SIZE * 0.28 + Math.floor(i / 6) * 55;
-      g.fillRect(bx, by, 40 + (i % 3) * 8, 30 + (i % 2) * 20);
-    }
+    drawUruguayMap(this, this.pois);
   }
 
   private spawnPois(): void {
@@ -271,24 +237,32 @@ export class WorldScene extends Phaser.Scene {
         repeat: -1,
         ease: 'sine.inOut',
       });
-      this.add
-        .text(poi.x, poi.y + 28, poi.title, {
+
+      // Title + what it's about (e.g. "La Rambla — Quién soy")
+      const label = this.add
+        .text(poi.x, poi.y + 30, labelForPoi(poi), {
           fontFamily: 'DM Sans, system-ui',
           fontSize: '13px',
+          fontStyle: '600',
           color: '#f7f2e9',
-          backgroundColor: 'rgba(11,18,32,0.55)',
-          padding: { x: 6, y: 3 },
+          backgroundColor: 'rgba(11,18,32,0.78)',
+          padding: { x: 10, y: 6 },
+          align: 'center',
         })
         .setOrigin(0.5, 0)
         .setDepth(6);
+      // Soft shadow plate behind label for contrast on sand/water
+      const bounds = label.getBounds();
+      this.add
+        .rectangle(bounds.centerX, bounds.centerY, bounds.width + 4, bounds.height + 4, 0x0b1220, 0.2)
+        .setDepth(5.5);
 
       // Landmark totem
-      const totem = this.add.graphics();
-      totem.fillStyle(poi.color, 0.85);
+      const totem = this.add.graphics().setDepth(4);
+      totem.fillStyle(poi.color, 0.9);
       totem.fillRoundedRect(poi.x - 8, poi.y - 70, 16, 50, 4);
-      totem.fillStyle(0xf4c430, 0.9);
+      totem.fillStyle(0xf4c430, 0.95);
       totem.fillCircle(poi.x, poi.y - 78, 10);
-      totem.setDepth(4);
     }
   }
 
@@ -306,7 +280,7 @@ export class WorldScene extends Phaser.Scene {
     if (best) {
       this.prompt.setVisible(true);
       this.prompt.setPosition(this.player.x, this.player.y - 70);
-      this.prompt.setText(`E · ${best.title}`);
+      this.prompt.setText(`E · ${labelForPoi(best)}`);
     } else {
       this.prompt.setVisible(false);
     }

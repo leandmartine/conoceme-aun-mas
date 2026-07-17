@@ -1,9 +1,13 @@
 import type { PlaceId, PlaceSummaryDto } from '@conoceme/shared';
 
-/** Scale abstract content coords → world pixels. */
-export const WORLD_SCALE = 10;
-export const WORLD_PADDING = 480;
 export const WORLD_SIZE = 2400;
+const PAD = 300;
+
+/** Content map bounds (from places.index.json). */
+const CX0 = -120;
+const CX1 = 130;
+const CY0 = -100;
+const CY1 = 140;
 
 export interface WorldPoi {
   id: PlaceId;
@@ -15,21 +19,23 @@ export interface WorldPoi {
   color: number;
 }
 
+/** Palette aligned with Uruguay biomes + design tokens. */
 const ZONE_COLORS: Record<PlaceId, number> = {
-  rambla: 0x1b4f72,
-  'ciudad-vieja': 0xc4a574,
-  skyline: 0x5a6d8a,
-  universidad: 0x4a7c59,
-  puerto: 0x2c5f7c,
-  campo: 0x6b8f4e,
-  faro: 0xe07a5f,
+  rambla: 0x2a6f97, // río / costa
+  'ciudad-vieja': 0xc4a574, // piedra colonial
+  skyline: 0x5b7c99, // vidrio urbano
+  universidad: 0x4a7c59, // campus
+  puerto: 0x1b4f72, // muelle / agua profunda
+  campo: 0x5d8f4e, // pastura
+  faro: 0xe07a5f, // faro / atardecer
 };
 
 export function contentToWorld(mapX: number, mapY: number): { x: number; y: number } {
-  // content y grows south in our ascii map; Phaser y also grows down
+  const nx = (mapX - CX0) / (CX1 - CX0);
+  const ny = (mapY - CY0) / (CY1 - CY0);
   return {
-    x: WORLD_SIZE / 2 + mapX * WORLD_SCALE,
-    y: WORLD_SIZE / 2 + mapY * WORLD_SCALE,
+    x: PAD + nx * (WORLD_SIZE - PAD * 2),
+    y: PAD + ny * (WORLD_SIZE - PAD * 2),
   };
 }
 
@@ -53,6 +59,10 @@ export function spawnFromPlaces(
   spawnId: PlaceId,
 ): { x: number; y: number } {
   const spawn = places.find((p) => p.id === spawnId) ?? places[0];
-  if (!spawn) return { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2 + 200 };
+  if (!spawn) return { x: WORLD_SIZE / 2, y: WORLD_SIZE * 0.7 };
   return contentToWorld(spawn.map.x, spawn.map.y);
+}
+
+export function labelForPoi(poi: Pick<WorldPoi, 'title' | 'subtitle'>): string {
+  return `${poi.title} — ${poi.subtitle}`;
 }
