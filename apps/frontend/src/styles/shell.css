@@ -103,8 +103,14 @@
   color: #ffb4a8;
 }
 
-.shell__cta {
+.shell__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-top: 1.75rem;
+}
+
+.shell__cta {
   border: 1px solid rgba(224, 122, 95, 0.55);
   background: linear-gradient(180deg, rgba(224, 122, 95, 0.28), rgba(224, 122, 95, 0.12));
   color: var(--uy-cream);
@@ -115,13 +121,37 @@
   transition:
     transform 0.25s ease,
     background 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    opacity 0.2s ease;
 }
 
-.shell__cta:hover {
+.shell__cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shell__cta:not(:disabled):hover {
   transform: translateY(-2px);
   background: linear-gradient(180deg, rgba(224, 122, 95, 0.42), rgba(224, 122, 95, 0.18));
   border-color: rgba(224, 122, 95, 0.85);
+}
+
+.shell__cta--ghost {
+  border-color: rgba(247, 242, 233, 0.2);
+  background: rgba(247, 242, 233, 0.05);
+}
+
+.shell__cta--ghost:not(:disabled):hover {
+  background: rgba(247, 242, 233, 0.1);
+  border-color: rgba(247, 242, 233, 0.35);
+}
+
+.shell__place-card--playable {
+  cursor: pointer;
+}
+
+.shell__finale .shell__cta {
+  margin-top: 1.5rem;
 }
 
 .shell__scroll-hint {

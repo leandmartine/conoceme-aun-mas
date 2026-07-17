@@ -8,6 +8,7 @@ export interface ShellModel {
   places: PlacesIndexDto | null;
   error: string | null;
   apiOk: boolean;
+  onEnterWorld?: () => void;
 }
 
 let motion: MotionHandle | null = null;
@@ -57,21 +58,31 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   });
   status.setAttribute('data-hero-line', '');
 
-  const cta = el('button', {
+  const ctaRow = el('div', { className: 'shell__cta-row' });
+  const ctaPlay = el('button', {
     className: 'shell__cta',
     type: 'button',
-    text: 'Explorar el mapa ↓',
+    text: 'Entrar al mundo',
   }) as HTMLButtonElement;
-  cta.addEventListener('click', () => {
+  ctaPlay.disabled = !model.places || !model.onEnterWorld;
+  ctaPlay.addEventListener('click', () => model.onEnterWorld?.());
+
+  const ctaMap = el('button', {
+    className: 'shell__cta shell__cta--ghost',
+    type: 'button',
+    text: 'Ver lugares ↓',
+  }) as HTMLButtonElement;
+  ctaMap.addEventListener('click', () => {
     document.getElementById('mapa')?.scrollIntoView({ behavior: 'smooth' });
   });
+  ctaRow.append(ctaPlay, ctaMap);
 
   const scrollHint = el('p', {
     className: 'shell__scroll-hint',
-    text: 'Scroll para entrar',
+    text: 'O scrolleá la historia',
   });
 
-  hero.append(kicker, title, subtitle, status, cta, scrollHint);
+  hero.append(kicker, title, subtitle, status, ctaRow, scrollHint);
   stage.append(stageBg, hero);
 
   // ——— CHAPTER: mood ———
@@ -118,6 +129,11 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
           text: place.subtitle ?? place.chapter,
         }),
       );
+      if (model.onEnterWorld) {
+        card.classList.add('shell__place-card--playable');
+        card.addEventListener('click', () => model.onEnterWorld?.());
+        card.title = 'Entrar al mundo';
+      }
       placesGrid.append(card);
     }
   } else if (!model.error) {
@@ -176,15 +192,23 @@ export function createShell(root: HTMLElement, model: ShellModel): void {
   finale.setAttribute('data-chapter', '');
   const finaleTitle = el('h2', {
     className: 'shell__finale-title',
-    text: 'El mundo jugable llega en la próxima etapa',
+    text: 'Listo para caminar Uruguay',
   });
   finaleTitle.setAttribute('data-reveal', '');
   const finaleBody = el('p', {
     className: 'shell__chapter-body',
-    text: 'Personaje top-down, minimapa brújula y zonas de Uruguay en Phaser. Esta intro ya es el portal.',
+    text: 'Personaje top-down, brújula y lugares del portfolio. Entrá al mundo y elegí tu camino.',
   });
   finaleBody.setAttribute('data-reveal', '');
-  finale.append(finaleTitle, finaleBody);
+  const finaleCta = el('button', {
+    className: 'shell__cta',
+    type: 'button',
+    text: 'Entrar al mundo',
+  }) as HTMLButtonElement;
+  finaleCta.disabled = !model.places || !model.onEnterWorld;
+  finaleCta.setAttribute('data-reveal', '');
+  finaleCta.addEventListener('click', () => model.onEnterWorld?.());
+  finale.append(finaleTitle, finaleBody, finaleCta);
 
   shell.append(grain, stage, mood, mapChapter, about, finale);
   root.append(shell);
